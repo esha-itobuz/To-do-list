@@ -1,0 +1,579 @@
+$primary-color: #ffffff;
+$secondary-color: #f8f9fa;
+$accent-color: #dc4c3e;
+$text-primary: #202020;
+$text-secondary: #6c757d;
+$text-muted: #9ca3af;
+$border-color: #e9ecef;
+$shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.06);
+$shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.08);
+$shadow-strong: 0 8px 25px rgba(0, 0, 0, 0.15);
+$success-color: #28a745;
+$warning-color: #ffc107;
+$border-radius: 12px;
+$border-radius-small: 8px;
+
+$font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  "Helvetica Neue", Arial, sans-serif;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+body {
+  font-family: $font-family;
+  margin: 0;
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #6b727dc9 100%);
+  min-height: 100vh;
+  color: $text-primary;
+  line-height: 1.6;
+
+  .main-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 40px);
+    position: relative;
+
+    #todo-container {
+      background: $primary-color;
+      width: 100%;
+      max-width: 700px;
+      border-radius: $border-radius;
+      box-shadow: $shadow-strong;
+      overflow: hidden;
+      animation: fadeIn 0.5s ease-out;
+
+      #header {
+        padding: 24px 24px 16px;
+        background: linear-gradient(
+          135deg,
+          $primary-color 0%,
+          $secondary-color 100%
+        );
+        border-bottom: 1px solid $border-color;
+
+        h1 {
+          margin: 0;
+          font-size: 28px;
+          font-weight: $font-weight-semibold;
+          color: $text-primary;
+          text-align: center;
+          letter-spacing: -0.5px;
+        }
+      }
+
+      #todo-form {
+        padding: 20px 24px;
+        background: $primary-color;
+        border-bottom: 1px solid $border-color;
+        display: flex;
+        gap: 12px;
+        align-items: stretch;
+
+        #input-box,
+        #input_dropdown {
+          flex: 1;
+          padding: 14px 16px;
+          border: 2px solid $border-color;
+          border-radius: $border-radius-small;
+          font-size: 16px;
+          font-weight: $font-weight-regular;
+          background: $primary-color;
+          color: $text-primary;
+          transition: all 0.2s ease;
+          outline: none;
+
+          &::placeholder {
+            color: $text-muted;
+          }
+
+          &:focus {
+            border-color: $accent-color;
+            box-shadow: 0 0 0 3px rgba($accent-color, 0.1);
+          }
+        }
+
+        #input-button {
+          padding: 14px 18px;
+          border: none;
+          border-radius: $border-radius-small;
+          background: $accent-color;
+          color: white;
+          font-size: 18px;
+          font-weight: $font-weight-semibold;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          min-width: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          &:hover {
+            background: darken($accent-color, 5%);
+            transform: translateY(-1px);
+            box-shadow: $shadow-medium;
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+        }
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        max-height: 60vh;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: rgba($text-muted, 0.3);
+          border-radius: 3px;
+
+          &:hover {
+            background: rgba($text-muted, 0.5);
+          }
+        }
+      }
+
+      li {
+        padding: 16px 24px;
+        border-bottom: 1px solid rgba($border-color, 0.5);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: $primary-color;
+        transition: all 0.2s ease;
+        animation: slideIn 0.3s ease-out;
+        position: relative;
+
+        &:hover {
+          background: rgba($secondary-color, 0.5);
+
+          .task-buttons {
+            opacity: 1;
+            visibility: visible;
+          }
+        }
+
+        label {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          flex-grow: 1;
+          cursor: pointer;
+          min-height: 24px;
+
+          input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            border: 2px solid $border-color;
+            border-radius: 6px;
+            cursor: pointer;
+            appearance: none;
+            background: $primary-color;
+            transition: all 0.2s ease;
+            position: relative;
+            flex-shrink: 0;
+
+            &:checked {
+              background: $success-color;
+              border-color: $success-color;
+
+              &::after {
+                content: "✓";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: white;
+                font-size: 12px;
+                font-weight: bold;
+              }
+            }
+
+            &:hover {
+              border-color: $success-color;
+            }
+          }
+
+          span {
+            font-size: 16px;
+            font-weight: $font-weight-regular;
+            color: $text-primary;
+            word-break: break-word;
+            transition: all 0.2s ease;
+          }
+
+          .task-priority {
+            padding: 6px 12px;
+            border: none;
+            border-radius: $border-radius-small;
+            font-size: 12px;
+            font-weight: $font-weight-medium;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: rgba($text-secondary, 0.1);
+            color: darken($text-primary, 20%);
+          }
+        }
+
+        .task-buttons {
+          display: flex;
+          gap: 8px;
+
+          .edit-btn,
+          .delete-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: $border-radius-small;
+            font-size: 12px;
+            font-weight: $font-weight-medium;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+
+          .edit-btn {
+            background: rgba($warning-color, 0.1);
+            color: darken($warning-color, 20%);
+
+            &:hover {
+              background: rgba($warning-color, 0.2);
+              transform: translateY(-1px);
+            }
+          }
+
+          .delete-btn {
+            background: rgba($accent-color, 0.1);
+            color: $accent-color;
+
+            &:hover {
+              background: rgba($accent-color, 0.2);
+              transform: translateY(-1px);
+            }
+          }
+        }
+
+        &.completed {
+          background: rgba($success-color, 0.02);
+
+          label span {
+            text-decoration: line-through;
+            color: $text-muted;
+          }
+
+          &:hover {
+            background: rgba($success-color, 0.05);
+          }
+        }
+      }
+
+      .counter-container {
+        padding: 20px 24px;
+        background: $secondary-color;
+        border-top: 1px solid $border-color;
+
+        #task-counters {
+          display: flex;
+          justify-content: center;
+          gap: 24px;
+          font-size: 14px;
+          font-weight: $font-weight-medium;
+          color: $text-secondary;
+
+          .counter-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+
+            .counter-label {
+              font-size: 12px;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+              color: $text-muted;
+            }
+
+            .counter-value {
+              font-size: 18px;
+              font-weight: $font-weight-semibold;
+              color: $text-primary;
+            }
+          }
+        }
+      }
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.2s ease-out;
+
+      .modal-content {
+        background: $primary-color;
+        margin: 10% auto;
+        padding: 32px;
+        border-radius: $border-radius;
+        width: 90%;
+        max-width: 420px;
+        box-shadow: $shadow-strong;
+        position: relative;
+        animation: slideIn 0.3s ease-out;
+
+        .close-button {
+          position: absolute;
+          top: 16px;
+          right: 20px;
+          color: $text-muted;
+          font-size: 24px;
+          font-weight: bold;
+          cursor: pointer;
+          transition: color 0.2s ease;
+          width: 32px;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+
+          &:hover {
+            color: $accent-color;
+            background: rgba($accent-color, 0.1);
+          }
+        }
+
+        #modalMessage {
+          margin: 0 0 24px 0;
+          font-size: 18px;
+          font-weight: $font-weight-medium;
+          color: $text-primary;
+          text-align: center;
+          line-height: 1.5;
+        }
+
+        #modalInput {
+          width: 100%;
+          padding: 14px 16px;
+          margin: 0 0 24px 0;
+          border: 2px solid $border-color;
+          border-radius: $border-radius-small;
+          font-size: 16px;
+          font-weight: $font-weight-regular;
+          background: $primary-color;
+          color: $text-primary;
+          outline: none;
+          transition: all 0.2s ease;
+          box-sizing: border-box;
+
+          &:focus {
+            border-color: $accent-color;
+            box-shadow: 0 0 0 3px rgba($accent-color, 0.1);
+          }
+        }
+
+        .modal-buttons {
+          display: flex;
+          gap: 12px;
+          justify-content: center;
+
+          button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: $border-radius-small;
+            font-size: 16px;
+            font-weight: $font-weight-medium;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 100px;
+
+            &#modalOkButton {
+              background: $success-color;
+              color: white;
+
+              &:hover {
+                background: darken($success-color, 5%);
+                transform: translateY(-1px);
+                box-shadow: $shadow-medium;
+              }
+            }
+
+            &#modalCancelButton {
+              background: transparent;
+              color: $text-secondary;
+              border: 2px solid $border-color;
+
+              &:hover {
+                background: $secondary-color;
+                border-color: $text-secondary;
+                color: $text-primary;
+              }
+            }
+
+            &:active {
+              transform: translateY(0);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .main-div {
+    min-height: calc(100vh - 20px);
+
+    #todo-container {
+      max-width: none;
+      border-radius: $border-radius-small;
+      box-shadow: $shadow-medium;
+
+      #header {
+        padding: 20px 20px 12px;
+
+        h1 {
+          font-size: 24px;
+        }
+      }
+
+      #todo-form {
+        padding: 16px 20px;
+
+        .input-wrapper {
+          gap: 8px;
+        }
+
+        #input-box,
+        #input-button {
+          padding: 12px;
+          font-size: 16px;
+        }
+      }
+
+      li {
+        padding: 14px 20px;
+
+        label {
+          gap: 10px;
+
+          span {
+            font-size: 15px;
+          }
+        }
+
+        .task-buttons {
+          opacity: 1;
+          visibility: visible;
+          gap: 4px;
+
+          .edit-btn,
+          .delete-btn {
+            padding: 4px 8px;
+            font-size: 11px;
+          }
+        }
+      }
+
+      .counter-container {
+        padding: 16px 20px;
+
+        #task-counters {
+          gap: 16px;
+
+          .counter-item .counter-value {
+            font-size: 16px;
+          }
+        }
+      }
+    }
+
+    .modal .modal-content {
+      margin: 20% auto;
+      padding: 24px;
+      max-width: none;
+      width: 85%;
+    }
+  }
+}
+
+@media (max-width: 500px) {
+  .main-div #todo-container {
+    #todo-form {
+      flex-direction: column;
+      gap: 12px;
+
+      #input-button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+    ul {
+      flex-direction: column;
+    }
+
+    .modal .modal-content .modal-buttons {
+      flex-direction: column;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}

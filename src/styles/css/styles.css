@@ -1,0 +1,480 @@
+@charset "UTF-8";
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, rgba(107, 114, 125, 0.7882352941) 100%);
+  min-height: 100vh;
+  color: #202020;
+  line-height: 1.6;
+}
+body .main-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 40px);
+  position: relative;
+}
+body .main-div #todo-container {
+  background: #ffffff;
+  width: 100%;
+  max-width: 700px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  animation: fadeIn 0.5s ease-out;
+}
+body .main-div #todo-container #header {
+  padding: 24px 24px 16px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-bottom: 1px solid #e9ecef;
+}
+body .main-div #todo-container #header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: #202020;
+  text-align: center;
+  letter-spacing: -0.5px;
+}
+body .main-div #todo-container #todo-form {
+  padding: 20px 24px;
+  background: #ffffff;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+body .main-div #todo-container #todo-form #input-box,
+body .main-div #todo-container #todo-form #input_dropdown {
+  flex: 1;
+  padding: 14px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 400;
+  background: #ffffff;
+  color: #202020;
+  transition: all 0.2s ease;
+  outline: none;
+}
+body .main-div #todo-container #todo-form #input-box::placeholder,
+body .main-div #todo-container #todo-form #input_dropdown::placeholder {
+  color: #9ca3af;
+}
+body .main-div #todo-container #todo-form #input-box:focus,
+body .main-div #todo-container #todo-form #input_dropdown:focus {
+  border-color: #dc4c3e;
+  box-shadow: 0 0 0 3px rgba(220, 76, 62, 0.1);
+}
+body .main-div #todo-container #todo-form #input-button {
+  padding: 14px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #dc4c3e;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+body .main-div #todo-container #todo-form #input-button:hover {
+  background: rgb(216.0855263158, 55.9802631579, 40.4144736842);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+body .main-div #todo-container #todo-form #input-button:active {
+  transform: translateY(0);
+}
+body .main-div #todo-container ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+body .main-div #todo-container ul::-webkit-scrollbar {
+  width: 6px;
+}
+body .main-div #todo-container ul::-webkit-scrollbar-track {
+  background: transparent;
+}
+body .main-div #todo-container ul::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 3px;
+}
+body .main-div #todo-container ul::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5);
+}
+body .main-div #todo-container li {
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(233, 236, 239, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  transition: all 0.2s ease;
+  animation: slideIn 0.3s ease-out;
+  position: relative;
+}
+body .main-div #todo-container li:hover {
+  background: rgba(248, 249, 250, 0.5);
+}
+body .main-div #todo-container li:hover .task-buttons {
+  opacity: 1;
+  visibility: visible;
+}
+body .main-div #todo-container li label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-grow: 1;
+  cursor: pointer;
+  min-height: 24px;
+}
+body .main-div #todo-container li label input[type=checkbox] {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e9ecef;
+  border-radius: 6px;
+  cursor: pointer;
+  appearance: none;
+  background: #ffffff;
+  transition: all 0.2s ease;
+  position: relative;
+  flex-shrink: 0;
+}
+body .main-div #todo-container li label input[type=checkbox]:checked {
+  background: #28a745;
+  border-color: #28a745;
+}
+body .main-div #todo-container li label input[type=checkbox]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+body .main-div #todo-container li label input[type=checkbox]:hover {
+  border-color: #28a745;
+}
+body .main-div #todo-container li label span {
+  font-size: 16px;
+  font-weight: 400;
+  color: #202020;
+  word-break: break-word;
+  transition: all 0.2s ease;
+}
+body .main-div #todo-container li label .task-priority {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(108, 117, 125, 0.1);
+  color: black;
+}
+body .main-div #todo-container li .task-buttons {
+  display: flex;
+  gap: 8px;
+}
+body .main-div #todo-container li .task-buttons .edit-btn,
+body .main-div #todo-container li .task-buttons .delete-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+body .main-div #todo-container li .task-buttons .edit-btn {
+  background: rgba(255, 193, 7, 0.1);
+  color: #a07800;
+}
+body .main-div #todo-container li .task-buttons .edit-btn:hover {
+  background: rgba(255, 193, 7, 0.2);
+  transform: translateY(-1px);
+}
+body .main-div #todo-container li .task-buttons .delete-btn {
+  background: rgba(220, 76, 62, 0.1);
+  color: #dc4c3e;
+}
+body .main-div #todo-container li .task-buttons .delete-btn:hover {
+  background: rgba(220, 76, 62, 0.2);
+  transform: translateY(-1px);
+}
+body .main-div #todo-container li.completed {
+  background: rgba(40, 167, 69, 0.02);
+}
+body .main-div #todo-container li.completed label span {
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+body .main-div #todo-container li.completed:hover {
+  background: rgba(40, 167, 69, 0.05);
+}
+body .main-div #todo-container .counter-container {
+  padding: 20px 24px;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+}
+body .main-div #todo-container .counter-container #task-counters {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6c757d;
+}
+body .main-div #todo-container .counter-container #task-counters .counter-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+body .main-div #todo-container .counter-container #task-counters .counter-item .counter-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #9ca3af;
+}
+body .main-div #todo-container .counter-container #task-counters .counter-item .counter-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #202020;
+}
+body .main-div .modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease-out;
+}
+body .main-div .modal .modal-content {
+  background: #ffffff;
+  margin: 10% auto;
+  padding: 32px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  position: relative;
+  animation: slideIn 0.3s ease-out;
+}
+body .main-div .modal .modal-content .close-button {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  color: #9ca3af;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+body .main-div .modal .modal-content .close-button:hover {
+  color: #dc4c3e;
+  background: rgba(220, 76, 62, 0.1);
+}
+body .main-div .modal .modal-content #modalMessage {
+  margin: 0 0 24px 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: #202020;
+  text-align: center;
+  line-height: 1.5;
+}
+body .main-div .modal .modal-content #modalInput {
+  width: 100%;
+  padding: 14px 16px;
+  margin: 0 0 24px 0;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 400;
+  background: #ffffff;
+  color: #202020;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+body .main-div .modal .modal-content #modalInput:focus {
+  border-color: #dc4c3e;
+  box-shadow: 0 0 0 3px rgba(220, 76, 62, 0.1);
+}
+body .main-div .modal .modal-content .modal-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+body .main-div .modal .modal-content .modal-buttons button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+}
+body .main-div .modal .modal-content .modal-buttons button#modalOkButton {
+  background: #28a745;
+  color: white;
+}
+body .main-div .modal .modal-content .modal-buttons button#modalOkButton:hover {
+  background: rgb(35.0724637681, 146.4275362319, 60.5);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+body .main-div .modal .modal-content .modal-buttons button#modalCancelButton {
+  background: transparent;
+  color: #6c757d;
+  border: 2px solid #e9ecef;
+}
+body .main-div .modal .modal-content .modal-buttons button#modalCancelButton:hover {
+  background: #f8f9fa;
+  border-color: #6c757d;
+  color: #202020;
+}
+body .main-div .modal .modal-content .modal-buttons button:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+  .main-div {
+    min-height: calc(100vh - 20px);
+  }
+  .main-div #todo-container {
+    max-width: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  .main-div #todo-container #header {
+    padding: 20px 20px 12px;
+  }
+  .main-div #todo-container #header h1 {
+    font-size: 24px;
+  }
+  .main-div #todo-container #todo-form {
+    padding: 16px 20px;
+  }
+  .main-div #todo-container #todo-form .input-wrapper {
+    gap: 8px;
+  }
+  .main-div #todo-container #todo-form #input-box,
+  .main-div #todo-container #todo-form #input-button {
+    padding: 12px;
+    font-size: 16px;
+  }
+  .main-div #todo-container li {
+    padding: 14px 20px;
+  }
+  .main-div #todo-container li label {
+    gap: 10px;
+  }
+  .main-div #todo-container li label span {
+    font-size: 15px;
+  }
+  .main-div #todo-container li .task-buttons {
+    opacity: 1;
+    visibility: visible;
+    gap: 4px;
+  }
+  .main-div #todo-container li .task-buttons .edit-btn,
+  .main-div #todo-container li .task-buttons .delete-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+  .main-div #todo-container .counter-container {
+    padding: 16px 20px;
+  }
+  .main-div #todo-container .counter-container #task-counters {
+    gap: 16px;
+  }
+  .main-div #todo-container .counter-container #task-counters .counter-item .counter-value {
+    font-size: 16px;
+  }
+  .main-div .modal .modal-content {
+    margin: 20% auto;
+    padding: 24px;
+    max-width: none;
+    width: 85%;
+  }
+}
+@media (max-width: 500px) {
+  .main-div #todo-container #todo-form {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .main-div #todo-container #todo-form #input-button {
+    width: 100%;
+    justify-content: center;
+  }
+  .main-div #todo-container ul {
+    flex-direction: column;
+  }
+  .main-div #todo-container .modal .modal-content .modal-buttons {
+    flex-direction: column;
+  }
+  .main-div #todo-container .modal .modal-content .modal-buttons button {
+    width: 100%;
+  }
+}
+
+/*# sourceMappingURL=styles.css.map */

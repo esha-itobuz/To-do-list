@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List</title>
+  <link rel="stylesheet" href="./src/styles/css/styles.css">
+</head>
+
+<body>
+  <div class="main-div">
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <p id="modalMessage"></p>
+        <input type="text" id="modalInput" style="display: none;">
+        <div class="modal-buttons">
+          <button id="modalOkButton">OK</button>
+          <button id="modalCancelButton" style="display: none;">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="todo-container">
+      <div id="header">
+        <h1>&lt; To-Do List /&gt;</h1>
+      </div>
+
+      <div id="todo-form">
+        <input type="text" class="input-item" name="input_box" id="input-box" placeholder="Add Task" />
+        <select name="myDropdown" id="input_dropdown" aria-placeholder="select">
+          <option></option>
+          <option id="high-option">High</option>
+          <option id="medium-option">Medium</option>
+          <option id="low-option">Low</option>
+        </select>
+        <button id="input-button" onclick="addTask()">+</button>
+      </div>
+
+      <ul id="list-container"></ul>
+
+      <div class="counter-container">
+        <div id="task-counters">
+          Complete: <span id="completed-counter">0</span> Incomplete:
+          <span id="uncompleted-counter">0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./src/js/main.js">
+  </script>
+</body>
+
+</html>
