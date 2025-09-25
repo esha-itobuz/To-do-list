@@ -466,8 +466,10 @@ body .main-div .modal .modal-content .modal-buttons button:active {
     width: 100%;
     justify-content: center;
   }
-  .main-div #todo-container ul {
+  .main-div #todo-container ul li {
+    display: flex;
     flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
   .main-div #todo-container .modal .modal-content .modal-buttons {
     flex-direction: column;

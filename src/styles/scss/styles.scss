@@ -564,8 +564,13 @@ body {
         justify-content: center;
       }
     }
+
     ul {
-      flex-direction: column;
+      li {
+        display: flex;
+        flex-direction: column;
+        box-shadow: $shadow-medium;
+      }
     }
 
     .modal .modal-content .modal-buttons {
