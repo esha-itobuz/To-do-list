@@ -28,12 +28,18 @@
       </div>
 
       <div id="todo-form">
-        <input type="text" class="input-item" name="input_box" id="input-box" placeholder="Add Task" />
-        <select name="myDropdown" id="input_dropdown" aria-placeholder="select">
-          <option></option>
-          <option id="high-option">High</option>
-          <option id="medium-option">Medium</option>
-          <option id="low-option">Low</option>
+        <div id="to-do-search">
+          <input type="text" id="search-input" placeholder="Search Tasks" />
+        </div>
+        <div id="add-task">
+          <input type="text" class="input-item" name="input_box" id="input-box" placeholder="Add Task" />
+          <select name="myDropdown" id="input_dropdown" aria-placeholder="select">
+        </div>
+        <div id="results-container"></div>
+        <option></option>
+        <option id="high-option">High</option>
+        <option id="medium-option">Medium</option>
+        <option id="low-option">Low</option>
         </select>
         <button id="input-button" onclick="addTask()">+</button>
       </div>

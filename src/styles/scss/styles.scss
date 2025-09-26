@@ -7,7 +7,7 @@ $text-muted: #9ca3af;
 $border-color: #e9ecef;
 $shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.06);
 $shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.08);
-$shadow-strong: 0 8px 25px rgba(0, 0, 0, 0.15);
+$shadow-strong: 0 8px 25px rgba(0, 0, 0, 0.35);
 $success-color: #28a745;
 $warning-color: #ffc107;
 $border-radius: 12px;
@@ -55,7 +55,9 @@ body {
   font-family: $font-family;
   margin: 0;
   padding: 20px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #6b727dc9 100%);
+  background-image: url("https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjEwMTQtYmctMDJhLWt0Mjh2eXd6LmpwZw.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
   min-height: 100vh;
   color: $text-primary;
   line-height: 1.6;
@@ -68,6 +70,9 @@ body {
     position: relative;
 
     #todo-container {
+      content: "";
+      position: absolute;
+      backdrop-filter: darken(#2b2929, 5%);
       background: $primary-color;
       width: 100%;
       max-width: 700px;
@@ -100,11 +105,27 @@ body {
         background: $primary-color;
         border-bottom: 1px solid $border-color;
         display: flex;
+        flex-direction: column;
         gap: 12px;
         align-items: stretch;
 
+        #to-do-search {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          input {
+            width: 50%;
+          }
+        }
+
+        #add-task {
+          display: flex;
+          gap: 10px;
+        }
+
         #input-box,
-        #input_dropdown {
+        #input_dropdown,
+        #to-do-search input {
           flex: 1;
           padding: 14px 16px;
           border: 2px solid $border-color;
@@ -558,6 +579,10 @@ body {
     #todo-form {
       flex-direction: column;
       gap: 12px;
+
+      #add-task {
+        flex-direction: column;
+      }
 
       #input-button {
         width: 100%;
