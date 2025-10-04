@@ -4,6 +4,7 @@ const listContainer = document.getElementById("list-container");
 const completedCounter = document.getElementById("completed-counter");
 const uncompletedCounter = document.getElementById("uncompleted-counter");
 const searchBar = document.getElementById("search-input");
+const tagsInput = document.getElementById("tags");
 
 const modal = document.getElementById("myModal");
 const closeButton = document.querySelector(".close-button");
@@ -13,57 +14,90 @@ const modalMessage = document.getElementById("modalMessage");
 const modalInput = document.getElementById("modalInput");
 
 let currentEditingTask = null;
-let allTasks = [];
+const API_URL = "http://localhost:3000/todos"; 
 
-function addTask(taskText, priority, completed = false) {
+
+async function fetchTodos() {
+  const res = await fetch(API_URL);
+  return await res.json();
+}
+
+async function createTodo(task, priority) {
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title: task, tags: [priority] })
+  });
+  return await res.json();
+}
+
+async function updateTodo(id, updates) {
+  const res = await fetch(`${API_URL}/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updates)
+  });
+  return await res.json();
+}
+
+async function deleteTodo(id) {
+  const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+  return await res.json();
+}
+
+async function addTask(taskText, priority, completed = false, id = null) {
   const task =
     typeof taskText === "string" ? taskText.trim() : inputBox.value.trim();
   const taskPriority = priority || inputDropdown.value;
+
   if (!task) {
     showModal("Please write down a task", "alert");
     return;
   }
 
-  const li = document.createElement("li");
-  li.innerHTML = `
-                <label>
-                    <input type="checkbox">
-                    <span class="task-text">${task}</span>
-                    <span class="task-priority">${taskPriority}</span>
-                </label>
-                <div class="task-buttons">
-                    <span class="edit-btn">Edit</span>
-                    <span class="delete-btn">Delete</span>
-                </div>
-            `;
+  let newTodo;
+  if (!id) {
+    newTodo = await createTodo(task, taskPriority);
+  } else {
+    newTodo = { id, title: task, tags: [taskPriority], isCompleted: completed };
+  }
 
+  const li = document.createElement("li");
+  li.dataset.id = newTodo.id;
+  li.innerHTML = `
+    <label>
+      <input type="checkbox" ${newTodo.isCompleted ? "checked" : ""}>
+      <span class="task-text">${newTodo.title}</span>
+      <span class="task-priority">${taskPriority}</span>
+    </label>
+    <div class="task-buttons">
+      <span class="edit-btn">Edit</span>
+      <span class="delete-btn">Delete</span>
+    </div>
+  `;
   listContainer.appendChild(li);
+
   inputBox.value = "";
   inputDropdown.value = "";
 
   const checkbox = li.querySelector("input");
   const editBtn = li.querySelector(".edit-btn");
-  const taskSpan = li.querySelector("label span");
-  const prioritySpan = li.querySelector("label span");
+  const taskSpan = li.querySelector(".task-text");
+  const prioritySpan = li.querySelector(".task-priority");
   const deleteBtn = li.querySelector(".delete-btn");
 
-  checkbox.addEventListener("click", function () {
+  checkbox.addEventListener("click", async function () {
     li.classList.toggle("completed", checkbox.checked);
+    await updateTodo(li.dataset.id, { isCompleted: checkbox.checked });
     updateCounters();
-    saveTasksToLocalStorage();
   });
 
   editBtn.addEventListener("click", function () {
     currentEditingTask = { li, taskSpan, prioritySpan, checkbox };
-    showModal(
-      "Edit Task:",
-      "edit",
-      taskSpan.textContent,
-      prioritySpan.textContent
-    );
+    showModal("Edit Task:", "edit", taskSpan.textContent);
   });
 
-  deleteBtn.addEventListener("click", function () {
+  deleteBtn.addEventListener("click", async function () {
     currentEditingTask = li;
     showModal("Are you sure you want to delete this task?", "delete");
   });
@@ -74,7 +108,6 @@ function addTask(taskText, priority, completed = false) {
   }
 
   updateCounters();
-  saveTasksToLocalStorage();
 }
 
 function showModal(message, type, currentValue = "") {
@@ -109,24 +142,26 @@ function updateCounters() {
   uncompletedCounter.textContent = uncompletedTasks;
 }
 
-function handleModalOk() {
+async function handleModalOk() {
   const type = modal.dataset.type;
 
   if (type === "edit" && currentEditingTask) {
     const newText = modalInput.value.trim();
     if (newText) {
       currentEditingTask.taskSpan.textContent = newText;
+      await updateTodo(currentEditingTask.li.dataset.id, { title: newText });
       currentEditingTask.li.classList.remove("completed");
       currentEditingTask.checkbox.checked = false;
       updateCounters();
     }
   } else if (type === "delete" && currentEditingTask) {
+    const id = currentEditingTask.dataset.id;
+    await deleteTodo(id);
     currentEditingTask.remove();
     updateCounters();
   }
 
   hideModal();
-  saveTasksToLocalStorage();
 }
 
 function performSearch() {
@@ -148,12 +183,6 @@ function performSearch() {
     if (matchesSearch) {
       li.style.display = "flex";
       visibleCount++;
-
-      if (searchTerm !== "") {
-        highlightSearchTerm(li.querySelector(".task-text"), searchTerm);
-      } else {
-        removeHighlight(li.querySelector(".task-text"));
-      }
     } else {
       li.style.display = "none";
     }
@@ -180,6 +209,7 @@ function showNoResultsMessage(show) {
   }
 }
 
+// ============ Event Listeners ============
 inputBox.addEventListener("keypress", function (event) {
   if (event.key === "Enter") {
     addTask();
@@ -188,9 +218,10 @@ inputBox.addEventListener("keypress", function (event) {
 
 modalInput.addEventListener("keypress", function (event) {
   if (event.key === "Enter") {
-    addTask();
+    handleModalOk();
   }
 });
+
 searchBar.addEventListener("input", performSearch);
 closeButton.addEventListener("click", hideModal);
 cancelButton.addEventListener("click", hideModal);
@@ -202,37 +233,10 @@ window.addEventListener("click", function (event) {
   }
 });
 
-updateCounters();
-loadTasksFromLocalStorage();
-
-function saveTasksToLocalStorage() {
-  const tasks = [];
-  document.querySelectorAll("#list-container li").forEach((li) => {
-    const checkbox = li.querySelector("input[type='checkbox']");
-    const taskSpan = li.querySelector("label span");
-    const prioritySpan = li.querySelector(".task-priority");
-    tasks.push({
-      text: taskSpan.textContent,
-      priority: prioritySpan.textContent,
-      completed: li.classList.contains("completed"),
-    });
-  });
-  localStorage.setItem("tasks", JSON.stringify(tasks));
-}
-
-function loadTasksFromLocalStorage() {
-  const tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+(async function init() {
+  const tasks = await fetchTodos();
   listContainer.innerHTML = "";
   tasks.forEach((task) => {
-    inputBox.value = task.text;
-    inputDropdown.value = task.priority;
-    addTask();
-    const lastLi = listContainer.lastElementChild;
-    if (task.completed) {
-      lastLi.classList.add("completed");
-      lastLi.querySelector("input[type='checkbox']").checked = true;
-    }
+    addTask(task.title, task.tags[0] || "", task.isCompleted, task.id);
   });
-  inputBox.value = "";
-  inputDropdown.value = "";
-}
+})();
