@@ -78,6 +78,8 @@ body .main-div #todo-container #todo-form {
   border-bottom: 1px solid #e9ecef;
 }
 body .main-div #todo-container #todo-form #to-do-search {
+  display: flex;
+  gap: 10px;
   margin-bottom: 12px;
 }
 body .main-div #todo-container #todo-form #search-input,
@@ -102,6 +104,22 @@ body .main-div #todo-container #todo-form #tags-input::placeholder {
 body .main-div #todo-container #todo-form #search-input:focus,
 body .main-div #todo-container #todo-form #input-box:focus,
 body .main-div #todo-container #todo-form #tags-input:focus {
+  border-color: #dc4c3e;
+  box-shadow: 0 0 0 3px rgba(220, 76, 62, 0.1);
+}
+body .main-div #todo-container #todo-form #sort-dropdown {
+  padding: 14px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #ffffff;
+  color: #202020;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  min-width: 150px;
+}
+body .main-div #todo-container #todo-form #sort-dropdown:focus {
   border-color: #dc4c3e;
   box-shadow: 0 0 0 3px rgba(220, 76, 62, 0.1);
 }
