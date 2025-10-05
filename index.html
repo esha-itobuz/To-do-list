@@ -21,40 +21,46 @@
         </div>
       </div>
     </div>
-
+  
     <div id="todo-container">
       <div id="header">
         <h1>&lt; To-Do List /&gt;</h1>
       </div>
-
+  
       <div id="todo-form">
         <div id="to-do-search">
-          <input type="text" id="search-input" placeholder="Search Tasks" />
+          <input type="text" id="search-input" placeholder="Search tasks or tags..." />
         </div>
+  
         <div id="add-task">
-          <input type="text" class="input-item" name="input_box" id="input-box" placeholder="Add Task" />
-          <select name="myDropdown" id="input_dropdown" aria-placeholder="select">
+          <input type="text" id="input-box" placeholder="Add Task" />
+          <button id="input-button">+</button>
         </div>
-        <div id="results-container"></div>
-        <option></option>
-        <option id="high-option">High</option>
-        <option id="medium-option">Medium</option>
-        <option id="low-option">Low</option>
-        </select>
-        <button id="input-button" onclick="addTask()">+</button>
+  
+        <div id="tags-section">
+          <input type="text" id="tags-input" placeholder="Add tags (e.g., urgent, work, personal)" />
+          <button id="add-tag-button">Add Tag</button>
+        </div>
+  
+        <div id="current-tags"></div>
       </div>
-
+  
       <ul id="list-container"></ul>
-
+  
       <div class="counter-container">
         <div id="task-counters">
-          Complete: <span id="completed-counter">0</span> Incomplete:
-          <span id="uncompleted-counter">0</span>
+          <div class="counter-item">
+            <span class="counter-label">Completed</span>
+            <span class="counter-value" id="completed-counter">0</span>
+          </div>
+          <div class="counter-item">
+            <span class="counter-label">Incomplete</span>
+            <span class="counter-value" id="uncompleted-counter">0</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
   <script src="./src/js/main.js">
   </script>
 </body>
