@@ -10,7 +10,7 @@ $shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.08);
 $shadow-strong: 0 8px 25px rgba(0, 0, 0, 0.35);
 $success-color: #28a745;
 $warning-color: #ffc107;
-$tag-color: #38363b;
+$tag-color: gray;
 $border-radius: 12px;
 $border-radius-small: 8px;
 
@@ -205,7 +205,7 @@ body {
             padding: 14px 20px;
             border: none;
             border-radius: $border-radius-small;
-            background: $text-secondary;
+            background: lighten($text-secondary, 5%);
             color: white;
             font-size: 14px;
             font-weight: $font-weight-semibold;
@@ -363,17 +363,29 @@ body {
             flex: 1;
           }
 
+          .task {
+            display: flex;
+            flex-direction: column;
+
+            .task-head {
+              display: flex;
+              align-items: center;
+              gap: 12px;
+            }
+          }
+
           .task-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
+            margin-left: 25px;
 
             .task-tag {
-              background: rgba($tag-color, 0.1);
+              // background: rgba($tag-color, 0.1);
               color: $tag-color;
               padding: 2px 7px;
               border-radius: 5px;
-              font-size: 10px;
+              font-size: 12px;
               font-weight: $font-weight-medium;
               text-transform: uppercase;
               letter-spacing: 0.5px;
@@ -398,7 +410,6 @@ body {
           }
 
           .edit-btn {
-            border: 2px solid $warning-color;
             background: rgba($warning-color, 0.1);
             color: darken($warning-color, 20%);
 
@@ -409,7 +420,6 @@ body {
           }
 
           .delete-btn {
-            border: 2px solid $accent-color;
             background: rgba($accent-color, 0.1);
             color: $accent-color;
 

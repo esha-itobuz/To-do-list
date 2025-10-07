@@ -161,7 +161,7 @@ body .main-div #todo-container #todo-form #tags-section #add-tag-button {
   padding: 14px 20px;
   border: none;
   border-radius: 8px;
-  background: #6c757d;
+  background: rgb(120.0751072961, 129.7896995708, 138.4248927039);
   color: white;
   font-size: 14px;
   font-weight: 600;
@@ -295,17 +295,26 @@ body .main-div #todo-container li label .task-text {
   transition: all 0.2s ease;
   flex: 1;
 }
+body .main-div #todo-container li label .task {
+  display: flex;
+  flex-direction: column;
+}
+body .main-div #todo-container li label .task .task-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 body .main-div #todo-container li label .task-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  margin-left: 25px;
 }
 body .main-div #todo-container li label .task-tags .task-tag {
-  background: rgba(56, 54, 59, 0.1);
-  color: #38363b;
+  color: gray;
   padding: 2px 7px;
   border-radius: 5px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -326,7 +335,6 @@ body .main-div #todo-container li .task-buttons .delete-btn {
   letter-spacing: 0.5px;
 }
 body .main-div #todo-container li .task-buttons .edit-btn {
-  border: 2px solid #ffc107;
   background: rgba(255, 193, 7, 0.1);
   color: #a07800;
 }
@@ -335,7 +343,6 @@ body .main-div #todo-container li .task-buttons .edit-btn:hover {
   transform: translateY(-1px);
 }
 body .main-div #todo-container li .task-buttons .delete-btn {
-  border: 2px solid #dc4c3e;
   background: rgba(220, 76, 62, 0.1);
   color: #dc4c3e;
 }

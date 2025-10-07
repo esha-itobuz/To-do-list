@@ -2,6 +2,7 @@ const inputBox = document.getElementById("input-box");
 const tagsInput = document.getElementById("tags-input");
 const currentTagsContainer = document.getElementById("current-tags");
 const addTagButton = document.getElementById("add-tag-button");
+const tagIcon = `<i class="fa-solid fa-tag" style="margin-right: 4px; font-size: 10px;"></i>`;
 const listContainer = document.getElementById("list-container");
 const completedCounter = document.getElementById("completed-counter");
 const uncompletedCounter = document.getElementById("uncompleted-counter");
@@ -202,12 +203,16 @@ async function addTask(taskText, tags, completed = false, id = null) {
   li.dataset.id = newTodo.id;
   li.innerHTML = `
     <label>
+    <div class="task">
+    <div class="task-head">
       <input type="checkbox" ${newTodo.isCompleted ? "checked" : ""}>
       <span class="task-text">${newTodo.title}</span>
+      </div>
       <div class="task-tags">
         ${taskTags
-          .map((tag) => `<span class="task-tag">${tag}</span>`)
+          .map((tag) => `<span class="task-tag">${tagIcon}${tag}</span>`)
           .join("")}
+      </div>
       </div>
     </label>
     <div class="task-buttons">
