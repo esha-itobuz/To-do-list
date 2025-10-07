@@ -5,12 +5,12 @@ $text-primary: #202020;
 $text-secondary: #6c757d;
 $text-muted: #9ca3af;
 $border-color: #e9ecef;
-$shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.06);
+$shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.03);
 $shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.08);
 $shadow-strong: 0 8px 25px rgba(0, 0, 0, 0.35);
 $success-color: #28a745;
 $warning-color: #ffc107;
-$tag-color: #7c3aed;
+$tag-color: #38363b;
 $border-radius: 12px;
 $border-radius-small: 8px;
 
@@ -64,9 +64,10 @@ $font-weight-semibold: 600;
 
 body {
   font-family: $font-family;
-  background-image: url("https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjEwMTQtYmctMDJhLWt0Mjh2eXd6LmpwZw.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
+  // background-image: url("https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjEwMTQtYmctMDJhLWt0Mjh2eXd6LmpwZw.jpg");
+  // background-size: cover;
+  // background-repeat: no-repeat;
+  background-color: beige;
   min-height: 100vh;
   padding: 20px;
   color: $text-primary;
@@ -83,15 +84,18 @@ body {
       width: 100%;
       max-width: 700px;
       border-radius: $border-radius;
-      box-shadow: $shadow-strong;
+      box-shadow: $shadow-subtle;
+      border: 2px solid rgba(128, 128, 128, 0.642);
       overflow: hidden;
       animation: fadeIn 0.5s ease-out;
 
       #header {
         padding: 24px 24px 16px;
-        background: linear-gradient(135deg,
-            $primary-color 0%,
-            $secondary-color 100%);
+        background: linear-gradient(
+          135deg,
+          $primary-color 0%,
+          $secondary-color 100%
+        );
         border-bottom: 1px solid $border-color;
 
         h1 {
@@ -138,22 +142,23 @@ body {
             box-shadow: 0 0 0 3px rgba($accent-color, 0.1);
           }
         }
-                #sort-dropdown {
-                  padding: 14px 16px;
-                  border: 2px solid #e9ecef;
-                  border-radius: 8px;
-                  font-size: 14px;
-                  background: #ffffff;
-                  color: #202020;
-                  cursor: pointer;
-                  outline: none;
-                  transition: all 0.2s ease;
-                  min-width: 150px;
-                }
-        
-                #sort-dropdown:focus {
-                  border-color: #dc4c3e;
-                  box-shadow: 0 0 0 3px rgba(220, 76, 62, 0.1);   }
+        #sort-dropdown {
+          padding: 14px 16px;
+          border: 2px solid #e9ecef;
+          border-radius: 8px;
+          font-size: 14px;
+          background: #ffffff;
+          color: #202020;
+          cursor: pointer;
+          outline: none;
+          transition: all 0.2s ease;
+          min-width: 150px;
+        }
+
+        #sort-dropdown:focus {
+          border-color: #dc4c3e;
+          box-shadow: 0 0 0 3px rgba(220, 76, 62, 0.1);
+        }
 
         #add-task {
           display: flex;
@@ -366,9 +371,9 @@ body {
             .task-tag {
               background: rgba($tag-color, 0.1);
               color: $tag-color;
-              padding: 4px 10px;
-              border-radius: 12px;
-              font-size: 11px;
+              padding: 2px 7px;
+              border-radius: 5px;
+              font-size: 10px;
               font-weight: $font-weight-medium;
               text-transform: uppercase;
               letter-spacing: 0.5px;
@@ -383,7 +388,6 @@ body {
           .edit-btn,
           .delete-btn {
             padding: 6px 12px;
-            border: none;
             border-radius: $border-radius-small;
             font-size: 12px;
             font-weight: $font-weight-medium;
@@ -394,6 +398,7 @@ body {
           }
 
           .edit-btn {
+            border: 2px solid $warning-color;
             background: rgba($warning-color, 0.1);
             color: darken($warning-color, 20%);
 
@@ -404,6 +409,7 @@ body {
           }
 
           .delete-btn {
+            border: 2px solid $accent-color;
             background: rgba($accent-color, 0.1);
             color: $accent-color;
 
@@ -660,7 +666,6 @@ body {
 @media (max-width: 500px) {
   body .main-div #todo-container {
     #todo-form {
-
       #add-task,
       #tags-section {
         flex-direction: column;

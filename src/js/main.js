@@ -17,7 +17,7 @@ const modalInput = document.getElementById("modalInput");
 
 let currentEditingTask = null;
 let currentTags = [];
-let editingTags = []; 
+let editingTags = [];
 const API_URL = "http://localhost:3000/todos";
 let USE_API = true;
 let todosDatabase = [];
@@ -29,7 +29,7 @@ async function checkAPI() {
     USE_API = res.ok;
     console.log("API available:", USE_API);
   } catch (error) {
-    USE_API = false;
+    USE_API = true;
     console.log("API not available, using in-memory storage");
   }
 }
@@ -48,13 +48,24 @@ async function fetchTodos() {
   }
 }
 
+async function fetchTodo(params) {
+  if (USE_API) {
+    try {
+      const res = await fetch(`${API_URL}/${id}`);
+      return await res.json();
+    } catch (error) {
+      console.error("Error fetching todo: ", error);
+    }
+  }
+}
+
 async function createTodo(task, tags) {
   if (USE_API) {
     try {
       const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: task, tags: tags })
+        body: JSON.stringify({ title: task, tags: tags }),
       });
       return await res.json();
     } catch (error) {
@@ -66,7 +77,7 @@ async function createTodo(task, tags) {
       id: Date.now(),
       title: task,
       tags: tags,
-      isCompleted: false
+      isCompleted: false,
     };
     todosDatabase.push(newTodo);
     return newTodo;
@@ -79,7 +90,7 @@ async function updateTodo(id, updates) {
       const res = await fetch(`${API_URL}/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updates)
+        body: JSON.stringify(updates),
       });
       return await res.json();
     } catch (error) {
@@ -87,7 +98,7 @@ async function updateTodo(id, updates) {
       return null;
     }
   } else {
-    const todo = todosDatabase.find(t => t.id == id);
+    const todo = todosDatabase.find((t) => t.id == id);
     if (todo) {
       Object.assign(todo, updates);
       return todo;
@@ -106,7 +117,7 @@ async function deleteTodo(id) {
       return null;
     }
   } else {
-    todosDatabase = todosDatabase.filter(t => t.id != id);
+    todosDatabase = todosDatabase.filter((t) => t.id != id);
     return { success: true };
   }
 }
@@ -121,13 +132,13 @@ function addTag() {
 }
 
 function removeTag(tag) {
-  currentTags = currentTags.filter(t => t !== tag);
+  currentTags = currentTags.filter((t) => t !== tag);
   renderCurrentTags();
 }
 
 function renderCurrentTags() {
   currentTagsContainer.innerHTML = "";
-  currentTags.forEach(tag => {
+  currentTags.forEach((tag) => {
     const tagBadge = document.createElement("span");
     tagBadge.className = "tag-badge";
     tagBadge.innerHTML = `
@@ -149,16 +160,16 @@ function addEditingTag() {
 }
 
 function removeEditingTag(tag) {
-  editingTags = editingTags.filter(t => t !== tag);
+  editingTags = editingTags.filter((t) => t !== tag);
   renderEditingTags();
 }
 
 function renderEditingTags() {
   const tagsContainer = document.getElementById("modal-tags-container");
   if (!tagsContainer) return;
-  
+
   tagsContainer.innerHTML = "";
-  editingTags.forEach(tag => {
+  editingTags.forEach((tag) => {
     const tagBadge = document.createElement("span");
     tagBadge.className = "tag-badge";
     tagBadge.innerHTML = `
@@ -170,7 +181,8 @@ function renderEditingTags() {
 }
 
 async function addTask(taskText, tags, completed = false, id = null) {
-  const task = typeof taskText === "string" ? taskText.trim() : inputBox.value.trim();
+  const task =
+    typeof taskText === "string" ? taskText.trim() : inputBox.value.trim();
   const taskTags = tags || [...currentTags];
 
   if (!task) {
@@ -193,7 +205,9 @@ async function addTask(taskText, tags, completed = false, id = null) {
       <input type="checkbox" ${newTodo.isCompleted ? "checked" : ""}>
       <span class="task-text">${newTodo.title}</span>
       <div class="task-tags">
-        ${taskTags.map(tag => `<span class="task-tag">${tag}</span>`).join('')}
+        ${taskTags
+          .map((tag) => `<span class="task-tag">${tag}</span>`)
+          .join("")}
       </div>
     </label>
     <div class="task-buttons">
@@ -219,11 +233,13 @@ async function addTask(taskText, tags, completed = false, id = null) {
   });
 
   editBtn.addEventListener("click", function () {
-    currentEditingTask = { 
-      li, 
-      taskSpan, 
-      checkbox, 
-      taskTags: Array.from(li.querySelectorAll('.task-tag')).map(t => t.textContent) 
+    currentEditingTask = {
+      li,
+      taskSpan,
+      checkbox,
+      taskTags: Array.from(li.querySelectorAll(".task-tag")).map(
+        (t) => t.textContent
+      ),
     };
     editingTags = [...currentEditingTask.taskTags];
     showModal("Edit Task:", "edit", taskSpan.textContent);
@@ -240,7 +256,7 @@ async function addTask(taskText, tags, completed = false, id = null) {
   }
 
   updateCounters();
-  
+
   if (currentSortOrder !== "default") {
     sortTasks();
   }
@@ -254,12 +270,12 @@ function showModal(message, type, currentValue = "") {
     modalInput.placeholder = "Task title";
     modalInput.value = currentValue;
     cancelButton.style.display = "inline-block";
-    
+
     const existingTagsSection = document.getElementById("modal-tags-section");
     if (existingTagsSection) {
       existingTagsSection.remove();
     }
-    
+
     const tagsSection = document.createElement("div");
     tagsSection.id = "modal-tags-section";
     tagsSection.style.marginBottom = "20px";
@@ -274,21 +290,21 @@ function showModal(message, type, currentValue = "") {
       </div>
       <div id="modal-tags-container" style="display: flex; flex-wrap: wrap; gap: 8px; min-height: 20px;"></div>
     `;
-    
+
     modalInput.parentNode.insertBefore(tagsSection, modalInput.nextSibling);
-    
+
     renderEditingTags();
-    
+
     setTimeout(() => {
       const modalTagInput = document.getElementById("modal-tag-input");
       const modalAddTagBtn = document.getElementById("modal-add-tag-btn");
-      
+
       if (modalAddTagBtn) {
         modalAddTagBtn.addEventListener("click", addEditingTag);
       }
-      
+
       if (modalTagInput) {
-        modalTagInput.addEventListener("keypress", function(e) {
+        modalTagInput.addEventListener("keypress", function (e) {
           if (e.key === "Enter") {
             e.preventDefault();
             addEditingTag();
@@ -296,7 +312,7 @@ function showModal(message, type, currentValue = "") {
         });
       }
     }, 0);
-    
+
     modalInput.focus();
   } else {
     modalInput.style.display = "none";
@@ -329,15 +345,18 @@ async function handleModalOk() {
     const newText = modalInput.value.trim();
     if (newText) {
       currentEditingTask.taskSpan.textContent = newText;
-      
-      const taskTagsContainer = currentEditingTask.li.querySelector('.task-tags');
-      taskTagsContainer.innerHTML = editingTags.map(tag => `<span class="task-tag">${tag}</span>`).join('');
-      
-      await updateTodo(currentEditingTask.li.dataset.id, { 
+
+      const taskTagsContainer =
+        currentEditingTask.li.querySelector(".task-tags");
+      taskTagsContainer.innerHTML = editingTags
+        .map((tag) => `<span class="task-tag">${tag}</span>`)
+        .join("");
+
+      await updateTodo(currentEditingTask.li.dataset.id, {
         title: newText,
-        tags: editingTags
+        tags: editingTags,
       });
-      
+
       currentEditingTask.li.classList.remove("completed");
       currentEditingTask.checkbox.checked = false;
       updateCounters();
@@ -361,58 +380,52 @@ function updateCounters() {
   uncompletedCounter.textContent = uncompletedTasks;
 }
 
-function performSearch() {
-  const searchTerm = searchBar.value.toLowerCase().trim();
-  const allTaskItems = document.querySelectorAll("#list-container li");
+async function performSearch() {
+  const query = searchBar.value.toLowerCase();
+  const tasks = await fetchTodos();
+  listContainer.innerHTML = "";
 
-  allTaskItems.forEach((li) => {
-    const taskText = li.querySelector(".task-text").textContent.toLowerCase();
-    const taskTags = Array.from(li.querySelectorAll(".task-tag"))
-      .map(tag => tag.textContent.toLowerCase());
-
-    const matchesSearch =
-      searchTerm === "" ||
-      taskText.includes(searchTerm) ||
-      taskTags.some(tag => tag.includes(searchTerm));
-
-    li.style.display = matchesSearch ? "flex" : "none";
-  });
+  tasks
+    .filter((task) => task.title.toLowerCase().includes(query))
+    .forEach((task) => {
+      addTask(task.title, task.tags || [], task.isCompleted, task.id);
+    });
 }
 
 function sortTasks() {
   const sortOrder = sortDropdown.value;
   currentSortOrder = sortOrder;
   const tasksArray = Array.from(listContainer.children);
-  
+
   tasksArray.sort((a, b) => {
-    const aText = a.querySelector('.task-text').textContent.toLowerCase();
-    const bText = b.querySelector('.task-text').textContent.toLowerCase();
-    const aCompleted = a.classList.contains('completed');
-    const bCompleted = b.classList.contains('completed');
+    const aText = a.querySelector(".task-text").textContent.toLowerCase();
+    const bText = b.querySelector(".task-text").textContent.toLowerCase();
+    const aCompleted = a.classList.contains("completed");
+    const bCompleted = b.classList.contains("completed");
     const aId = parseInt(a.dataset.id);
     const bId = parseInt(b.dataset.id);
 
-    switch(sortOrder) {
-      case 'alphabetical':
+    switch (sortOrder) {
+      case "alphabetical":
         return aText.localeCompare(bText);
-      case 'completed':
+      case "completed":
         return bCompleted - aCompleted;
-      case 'uncompleted':
+      case "uncompleted":
         return aCompleted - bCompleted;
-      case 'newest':
+      case "newest":
         return bId - aId;
-      case 'oldest':
+      case "oldest":
         return aId - bId;
       default:
         return 0;
     }
   });
 
-  listContainer.innerHTML = '';
-  tasksArray.forEach(task => listContainer.appendChild(task));
+  listContainer.innerHTML = "";
+  tasksArray.forEach((task) => listContainer.appendChild(task));
 }
 
-document.getElementById("input-button").addEventListener("click", function() {
+document.getElementById("input-button").addEventListener("click", function () {
   addTask();
 });
 
