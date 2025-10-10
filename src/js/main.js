@@ -121,6 +121,33 @@ async function deleteTodo(id) {
   }
 }
 
+async function searchTask(searchText, searchFilter) {
+  try {
+    const res = await fetch(
+      `${API_URL}?searchText=${searchText}&searchFilter=${searchFilter}`
+    );
+    if (!res.ok) {
+      throw new Error("Error occurred while sorting");
+    }
+    return await res.json();
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ error: e });
+  }
+}
+async function sortTask(sortFilter) {
+  try {
+    const res = await fetch(`${API_URL}/sort?sortFilter=${sortFilter}`);
+    if (!res.ok) {
+      throw new Error("Error occurred while sorting");
+    }
+    return await res.json();
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ error: e });
+  }
+}
+
 function addTag() {
   const tag = tagsInput.value.trim();
   if (tag && !currentTags.includes(tag)) {
