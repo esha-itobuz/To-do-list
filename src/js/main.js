@@ -35,24 +35,22 @@ async function checkAPI() {
   }
 }
 
-async function fetchTodos() {
-  if (USE_API) {
-    try {
-      const res = await fetch(API_URL);
-      return await res.json();
-    } catch (error) {
-      console.error("Error fetching todos:", error);
-      return [];
-    }
-  } else {
-    return todosDatabase;
-  }
-}
-
-async function fetchTodo(params) {
+async function fetchTodo(id) {
   if (USE_API) {
     try {
       const res = await fetch(`${API_URL}/${id}`);
+
+      return await res.json();
+    } catch (error) {
+      console.error("Error fetching todo:", error);
+    }
+  }
+}
+
+async function fetchTodos(params) {
+  if (USE_API) {
+    try {
+      const res = await fetch(API_URL);
       return await res.json();
     } catch (error) {
       console.error("Error fetching todo: ", error);
