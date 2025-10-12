@@ -1,159 +1,38 @@
-const inputBox = document.getElementById("input-box");
-const tagsInput = document.getElementById("tags-input");
-const currentTagsContainer = document.getElementById("current-tags");
-const addTagButton = document.getElementById("add-tag-button");
-const tagIcon = `<i class="fa-solid fa-tag" style="margin-right: 4px; font-size: 10px;"></i>`;
-const listContainer = document.getElementById("list-container");
-const completedCounter = document.getElementById("completed-counter");
-const uncompletedCounter = document.getElementById("uncompleted-counter");
-const searchBar = document.getElementById("search-input");
-const sortDropdown = document.getElementById("sort-dropdown");
+import {
+  checkAPI,
+  fetchTodos,
+  createTodo,
+  updateTodo,
+  deleteTodo,
+  searchTask,
+  sortTask,
+} from "./api.js";
+import { refs } from "./selectors.js";
 
-const modal = document.getElementById("myModal");
-const closeButton = document.querySelector(".close-button");
-const okButton = document.getElementById("modalOkButton");
-const cancelButton = document.getElementById("modalCancelButton");
-const modalMessage = document.getElementById("modalMessage");
-const modalInput = document.getElementById("modalInput");
+const tagIcon = `<i class="fa-solid fa-tag" style="margin-right: 4px; font-size: 10px;"></i>`;
 
 let currentEditingTask = null;
 let currentTags = [];
 let editingTags = [];
-const API_URL = "http://localhost:3000/todos";
-let USE_API = true;
-let todosDatabase = [];
 let currentSortOrder = "default";
 
-async function checkAPI() {
-  try {
-    const res = await fetch(API_URL);
-    USE_API = res.ok;
-    console.log("API available:", USE_API);
-  } catch (error) {
-    USE_API = true;
-    console.log("API not available, using in-memory storage");
-  }
+function renderCurrentTags() {
+  refs.currentTagsContainer.innerHTML = "";
+  currentTags.forEach((tag) => {
+    const tagBadge = document.createElement("span");
+    tagBadge.className = "tag-badge";
+    tagBadge.innerHTML = `
+      ${tag}
+      <span class="remove-tag" onclick="removeTag('${tag}')">×</span>
+    `;
+    refs.currentTagsContainer.appendChild(tagBadge);
+  });
 }
 
-async function fetchTodo(id) {
-  if (USE_API) {
-    try {
-      const res = await fetch(`${API_URL}/${id}`);
-
-      return await res.json();
-    } catch (error) {
-      console.error("Error fetching todo:", error);
-    }
-  }
-}
-
-async function fetchTodos(params) {
-  if (USE_API) {
-    try {
-      const res = await fetch(API_URL);
-      return await res.json();
-    } catch (error) {
-      console.error("Error fetching todo: ", error);
-    }
-  }
-}
-
-async function createTodo(task, tags) {
-  if (USE_API) {
-    try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: task, tags: tags }),
-      });
-      return await res.json();
-    } catch (error) {
-      console.error("Error creating todo:", error);
-      return null;
-    }
-  } else {
-    const newTodo = {
-      id: Date.now(),
-      title: task,
-      tags: tags,
-      isCompleted: false,
-    };
-    todosDatabase.push(newTodo);
-    return newTodo;
-  }
-}
-
-async function updateTodo(id, updates) {
-  if (USE_API) {
-    try {
-      const res = await fetch(`${API_URL}/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updates),
-      });
-      return await res.json();
-    } catch (error) {
-      console.error("Error updating todo:", error);
-      return null;
-    }
-  } else {
-    const todo = todosDatabase.find((t) => t.id == id);
-    if (todo) {
-      Object.assign(todo, updates);
-      return todo;
-    }
-    return null;
-  }
-}
-
-async function deleteTodo(id) {
-  if (USE_API) {
-    try {
-      const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-      return await res.json();
-    } catch (error) {
-      console.error("Error deleting todo:", error);
-      return null;
-    }
-  } else {
-    todosDatabase = todosDatabase.filter((t) => t.id != id);
-    return { success: true };
-  }
-}
-
-async function searchTask(searchText, searchFilter) {
-  try {
-    const res = await fetch(
-      `${API_URL}?searchText=${searchText}&searchFilter=${searchFilter}`
-    );
-    if (!res.ok) {
-      throw new Error("Error occurred while sorting");
-    }
-    return await res.json();
-  } catch (e) {
-    console.log(e);
-    return res.status(500).json({ error: e });
-  }
-}
-async function sortTask(sortFilter) {
-  try {
-    const res = await fetch(`${API_URL}/sort?sortFilter=${sortFilter}`);
-    if (!res.ok) {
-      throw new Error("Error occurred while sorting");
-    }
-    return await res.json();
-  } catch (e) {
-    console.log(e);
-    return res.status(500).json({ error: e });
-  }
-}
-
-function addTag() {
-  const tag = tagsInput.value.trim();
+function addTagLocal(tag) {
   if (tag && !currentTags.includes(tag)) {
     currentTags.push(tag);
     renderCurrentTags();
-    tagsInput.value = "";
   }
 }
 
@@ -162,38 +41,17 @@ function removeTag(tag) {
   renderCurrentTags();
 }
 
-function renderCurrentTags() {
-  currentTagsContainer.innerHTML = "";
-  currentTags.forEach((tag) => {
-    const tagBadge = document.createElement("span");
-    tagBadge.className = "tag-badge";
-    tagBadge.innerHTML = `
-      ${tag}
-      <span class="remove-tag" onclick="removeTag('${tag}')">×</span>
-    `;
-    currentTagsContainer.appendChild(tagBadge);
-  });
-}
-
-function addEditingTag() {
-  const modalTagInput = document.getElementById("modal-tag-input");
-  const tag = modalTagInput.value.trim();
-  if (tag && !editingTags.includes(tag)) {
-    editingTags.push(tag);
-    renderEditingTags();
-    modalTagInput.value = "";
-  }
-}
-
 function removeEditingTag(tag) {
   editingTags = editingTags.filter((t) => t !== tag);
   renderEditingTags();
 }
 
+window.removeTag = removeTag;
+window.removeEditingTag = removeEditingTag;
+
 function renderEditingTags() {
   const tagsContainer = document.getElementById("modal-tags-container");
   if (!tagsContainer) return;
-
   tagsContainer.innerHTML = "";
   editingTags.forEach((tag) => {
     const tagBadge = document.createElement("span");
@@ -206,9 +64,15 @@ function renderEditingTags() {
   });
 }
 
-async function addTask(taskText, tags, completed = false, id = null) {
+async function addTask(
+  taskText,
+  tags,
+  completed = false,
+  id = null,
+  skipSort = false
+) {
   const task =
-    typeof taskText === "string" ? taskText.trim() : inputBox.value.trim();
+    typeof taskText === "string" ? taskText.trim() : refs.inputBox.value.trim();
   const taskTags = tags || [...currentTags];
 
   if (!task) {
@@ -228,16 +92,16 @@ async function addTask(taskText, tags, completed = false, id = null) {
   li.dataset.id = newTodo.id;
   li.innerHTML = `
     <label>
-    <div class="task">
-    <div class="task-head">
-      <input type="checkbox" ${newTodo.isCompleted ? "checked" : ""}>
-      <span class="task-text">${newTodo.title}</span>
-      </div>
-      <div class="task-tags">
-        ${taskTags
-          .map((tag) => `<span class="task-tag">${tagIcon}${tag}</span>`)
-          .join("")}
-      </div>
+      <div class="task">
+        <div class="task-head">
+          <input type="checkbox" ${newTodo.isCompleted ? "checked" : ""}>
+          <span class="task-text">${newTodo.title}</span>
+        </div>
+        <div class="task-tags">
+          ${taskTags
+            .map((tag) => `<span class="task-tag">${tagIcon}${tag}</span>`)
+            .join("")}
+        </div>
       </div>
     </label>
     <div class="task-buttons">
@@ -245,9 +109,9 @@ async function addTask(taskText, tags, completed = false, id = null) {
       <span class="delete-btn">Delete</span>
     </div>
   `;
-  listContainer.appendChild(li);
+  refs.listContainer.appendChild(li);
 
-  inputBox.value = "";
+  refs.inputBox.value = "";
   currentTags = [];
   renderCurrentTags();
 
@@ -280,26 +144,26 @@ async function addTask(taskText, tags, completed = false, id = null) {
     showModal("Are you sure you want to delete this task?", "delete");
   });
 
-  if (completed) {
+  if (newTodo.isCompleted) {
     li.classList.add("completed");
     checkbox.checked = true;
   }
 
   updateCounters();
 
-  if (currentSortOrder !== "default") {
+  if (!skipSort && currentSortOrder !== "default") {
     sortTasks();
   }
 }
 
 function showModal(message, type, currentValue = "") {
-  modalMessage.textContent = message;
+  refs.modalMessage.textContent = message;
 
   if (type === "edit") {
-    modalInput.style.display = "block";
-    modalInput.placeholder = "Task title";
-    modalInput.value = currentValue;
-    cancelButton.style.display = "inline-block";
+    refs.modalInput.style.display = "block";
+    refs.modalInput.placeholder = "Task title";
+    refs.modalInput.value = currentValue;
+    refs.cancelButton.style.display = "inline-block";
 
     const existingTagsSection = document.getElementById("modal-tags-section");
     if (existingTagsSection) {
@@ -321,7 +185,10 @@ function showModal(message, type, currentValue = "") {
       <div id="modal-tags-container" style="display: flex; flex-wrap: wrap; gap: 8px; min-height: 20px;"></div>
     `;
 
-    modalInput.parentNode.insertBefore(tagsSection, modalInput.nextSibling);
+    refs.modalInput.parentNode.insertBefore(
+      tagsSection,
+      refs.modalInput.nextSibling
+    );
 
     renderEditingTags();
 
@@ -330,37 +197,50 @@ function showModal(message, type, currentValue = "") {
       const modalAddTagBtn = document.getElementById("modal-add-tag-btn");
 
       if (modalAddTagBtn) {
-        modalAddTagBtn.addEventListener("click", addEditingTag);
+        modalAddTagBtn.addEventListener("click", () => {
+          const input = document.getElementById("modal-tag-input");
+          if (input && input.value.trim()) {
+            editingTags.push(input.value.trim());
+            renderEditingTags();
+            input.value = "";
+          }
+        });
       }
 
       if (modalTagInput) {
         modalTagInput.addEventListener("keypress", function (e) {
           if (e.key === "Enter") {
             e.preventDefault();
-            addEditingTag();
+            const input = document.getElementById("modal-tag-input");
+            if (input && input.value.trim()) {
+              editingTags.push(input.value.trim());
+              renderEditingTags();
+              input.value = "";
+            }
           }
         });
       }
     }, 0);
 
-    modalInput.focus();
+    refs.modalInput.focus();
   } else {
-    modalInput.style.display = "none";
+    refs.modalInput.style.display = "none";
     const tagsSection = document.getElementById("modal-tags-section");
     if (tagsSection) {
       tagsSection.remove();
     }
-    cancelButton.style.display = type === "delete" ? "inline-block" : "none";
+    refs.cancelButton.style.display =
+      type === "delete" ? "inline-block" : "none";
   }
 
-  modal.style.display = "block";
-  modal.dataset.type = type;
+  refs.modal.style.display = "block";
+  refs.modal.dataset.type = type;
 }
 
 function hideModal() {
-  modal.style.display = "none";
+  refs.modal.style.display = "none";
   currentEditingTask = null;
-  modalInput.value = "";
+  refs.modalInput.value = "";
   editingTags = [];
   const tagsSection = document.getElementById("modal-tags-section");
   if (tagsSection) {
@@ -369,10 +249,10 @@ function hideModal() {
 }
 
 async function handleModalOk() {
-  const type = modal.dataset.type;
+  const type = refs.modal.dataset.type;
 
   if (type === "edit" && currentEditingTask) {
-    const newText = modalInput.value.trim();
+    const newText = refs.modalInput.value.trim();
     if (newText) {
       currentEditingTask.taskSpan.textContent = newText;
 
@@ -406,26 +286,45 @@ function updateCounters() {
   const totalTasks = document.querySelectorAll("li").length;
   const uncompletedTasks = totalTasks - completedTasks;
 
-  completedCounter.textContent = completedTasks;
-  uncompletedCounter.textContent = uncompletedTasks;
+  refs.completedCounter.textContent = completedTasks;
+  refs.uncompletedCounter.textContent = uncompletedTasks;
 }
 
 async function performSearch() {
-  const query = searchBar.value.toLowerCase();
-  const tasks = await fetchTodos();
-  listContainer.innerHTML = "";
+  const query = refs.searchBar.value.trim();
+  const searchFilter =
+    refs.sortDropdown.value === "completed" ||
+    refs.sortDropdown.value === "uncompleted"
+      ? refs.sortDropdown.value
+      : "";
 
-  tasks
-    .filter((task) => task.title.toLowerCase().includes(query))
-    .forEach((task) => {
-      addTask(task.title, task.tags || [], task.isCompleted, task.id);
-    });
+  try {
+    const tasks = await searchTask(query, searchFilter);
+    refs.listContainer.innerHTML = "";
+    (tasks || []).forEach((task) =>
+      addTask(task.title, task.tags || [], task.isCompleted, task.id, true)
+    );
+  } catch (e) {
+    console.error("performSearch error:", e);
+  }
 }
 
-function sortTasks() {
-  const sortOrder = sortDropdown.value;
+async function sortTasks() {
+  const sortOrder = refs.sortDropdown.value;
   currentSortOrder = sortOrder;
-  const tasksArray = Array.from(listContainer.children);
+
+  try {
+    const tasks = await sortTask(sortOrder);
+    refs.listContainer.innerHTML = "";
+    (tasks || []).forEach((task) =>
+      addTask(task.title, task.tags || [], task.isCompleted, task.id, true)
+    );
+    return;
+  } catch (e) {
+    console.error("Server sort failed:", e);
+  }
+
+  const tasksArray = Array.from(refs.listContainer.children);
 
   tasksArray.sort((a, b) => {
     const aText = a.querySelector(".task-text").textContent.toLowerCase();
@@ -439,9 +338,9 @@ function sortTasks() {
       case "alphabetical":
         return aText.localeCompare(bText);
       case "completed":
-        return bCompleted - aCompleted;
+        return Number(bCompleted) - Number(aCompleted);
       case "uncompleted":
-        return aCompleted - bCompleted;
+        return Number(aCompleted) - Number(bCompleted);
       case "newest":
         return bId - aId;
       case "oldest":
@@ -451,42 +350,53 @@ function sortTasks() {
     }
   });
 
-  listContainer.innerHTML = "";
-  tasksArray.forEach((task) => listContainer.appendChild(task));
+  refs.listContainer.innerHTML = "";
+  tasksArray.forEach((task) => refs.listContainer.appendChild(task));
 }
 
 document.getElementById("input-button").addEventListener("click", function () {
   addTask();
 });
 
-inputBox.addEventListener("keypress", function (event) {
+refs.inputBox.addEventListener("keypress", function (event) {
   if (event.key === "Enter") {
     addTask();
   }
 });
 
-tagsInput.addEventListener("keypress", function (event) {
+refs.tagsInput.addEventListener("keypress", function (event) {
   if (event.key === "Enter") {
-    addTag();
+    addTagLocal(refs.tagsInput.value.trim());
+    refs.tagsInput.value = "";
   }
 });
 
-addTagButton.addEventListener("click", addTag);
+refs.addTagButton.addEventListener("click", () => {
+  addTagLocal(refs.tagsInput.value.trim());
+  refs.tagsInput.value = "";
+});
 
-modalInput.addEventListener("keypress", function (event) {
+refs.modalInput.addEventListener("keypress", function (event) {
   if (event.key === "Enter") {
     handleModalOk();
   }
 });
 
-searchBar.addEventListener("input", performSearch);
-sortDropdown.addEventListener("change", sortTasks);
-closeButton.addEventListener("click", hideModal);
-cancelButton.addEventListener("click", hideModal);
-okButton.addEventListener("click", handleModalOk);
+let searchTimeout;
+refs.searchBar.addEventListener("input", function () {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    performSearch();
+  }, 250);
+});
+
+refs.sortDropdown.addEventListener("change", sortTasks);
+refs.closeButton.addEventListener("click", hideModal);
+refs.cancelButton.addEventListener("click", hideModal);
+refs.okButton.addEventListener("click", handleModalOk);
 
 window.addEventListener("click", function (event) {
-  if (event.target === modal) {
+  if (event.target === refs.modal) {
     hideModal();
   }
 });
@@ -494,8 +404,8 @@ window.addEventListener("click", function (event) {
 (async function init() {
   await checkAPI();
   const tasks = await fetchTodos();
-  listContainer.innerHTML = "";
+  refs.listContainer.innerHTML = "";
   tasks.forEach((task) => {
-    addTask(task.title, task.tags || [], task.isCompleted, task.id);
+    addTask(task.title, task.tags || [], task.isCompleted, task.id, true);
   });
 })();
