@@ -1,9 +1,13 @@
-export const API_URL = "http://localhost:3000/todos";
+import { fetchWithAuth } from "../auth/authFetch.js";
+
 export let USE_API = true;
+
+// 🧩 No need to hardcode full backend URL here — fetchWithAuth handles it
+const BASE_PATH = "/todos";
 
 export async function checkAPI() {
   try {
-    const res = await fetch(API_URL);
+    const res = await fetchWithAuth(BASE_PATH);
     USE_API = res.ok;
     console.log("API available:", USE_API);
   } catch (error) {
@@ -15,7 +19,7 @@ export async function checkAPI() {
 export async function fetchTodo(id) {
   if (!USE_API) return null;
   try {
-    const res = await fetch(`${API_URL}/${id}`);
+    const res = await fetchWithAuth(`${BASE_PATH}/${id}`);
     if (!res.ok) throw new Error("Fetch todo failed");
     return await res.json();
   } catch (error) {
@@ -27,11 +31,11 @@ export async function fetchTodo(id) {
 export async function fetchTodos() {
   if (!USE_API) return [];
   try {
-    const res = await fetch(API_URL);
+    const res = await fetchWithAuth(BASE_PATH);
     if (!res.ok) throw new Error("Fetch todos failed");
     return await res.json();
   } catch (error) {
-    console.error("Error fetching todo: ", error);
+    console.error("Error fetching todos:", error);
     return [];
   }
 }
@@ -39,10 +43,9 @@ export async function fetchTodos() {
 export async function createTodo(task, tags) {
   if (!USE_API) return null;
   try {
-    const res = await fetch(API_URL, {
+    const res = await fetchWithAuth(BASE_PATH, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: task, tags: tags }),
+      body: JSON.stringify({ title: task, tags }),
     });
     if (!res.ok) throw new Error("Create todo failed");
     return await res.json();
@@ -55,9 +58,8 @@ export async function createTodo(task, tags) {
 export async function updateTodo(id, updates) {
   if (!USE_API) return null;
   try {
-    const res = await fetch(`${API_URL}/${id}`, {
+    const res = await fetchWithAuth(`${BASE_PATH}/${id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updates),
     });
     if (!res.ok) throw new Error("Update todo failed");
@@ -71,7 +73,7 @@ export async function updateTodo(id, updates) {
 export async function deleteTodo(id) {
   if (!USE_API) return null;
   try {
-    const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+    const res = await fetchWithAuth(`${BASE_PATH}/${id}`, { method: "DELETE" });
     if (!res.ok) throw new Error("Delete todo failed");
     return await res.json();
   } catch (error) {
@@ -86,7 +88,7 @@ export async function searchTask(searchText, searchFilter) {
     const qs = `searchText=${encodeURIComponent(
       searchText || ""
     )}&searchFilter=${encodeURIComponent(searchFilter || "")}`;
-    const res = await fetch(`${API_URL}/search?${qs}`);
+    const res = await fetchWithAuth(`${BASE_PATH}/search?${qs}`);
     if (!res.ok) throw new Error("Search request failed");
     return await res.json();
   } catch (e) {
@@ -98,8 +100,8 @@ export async function searchTask(searchText, searchFilter) {
 export async function sortTask(sortFilter) {
   if (!USE_API) return [];
   try {
-    const res = await fetch(
-      `${API_URL}/sort?sortFilter=${encodeURIComponent(sortFilter)}`
+    const res = await fetchWithAuth(
+      `${BASE_PATH}/sort?sortFilter=${encodeURIComponent(sortFilter)}`
     );
     if (!res.ok) throw new Error("Sort request failed");
     return await res.json();
