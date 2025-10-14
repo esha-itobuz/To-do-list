@@ -89,6 +89,47 @@ body {
       overflow: hidden;
       animation: fadeIn 0.5s ease-out;
 
+      h1 {
+        text-align: center;
+        margin-top: 10px;
+      }
+
+      .welcome-routes {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 24px;
+        margin: 32px 0 24px 0;
+        padding: 24px 0 12px 0;
+        border-radius: $border-radius;
+        transition: background 0.3s;
+
+        button {
+          padding: 12px 32px;
+          border-radius: $border-radius-small;
+          border: none;
+          background: $accent-color;
+          color: #fff;
+          font-size: 18px;
+          font-weight: $font-weight-semibold;
+          letter-spacing: 1px;
+          cursor: pointer;
+          box-shadow: 0 2px 8px rgba($accent-color, 0.08);
+          transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+
+          &:hover {
+            background: darken($accent-color, 7%);
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 6px 18px rgba($accent-color, 0.13);
+          }
+
+          &:active {
+            background: darken($accent-color, 12%);
+            transform: scale(0.98);
+          }
+        }
+      }
+
       #header {
         padding: 24px 24px 16px;
         background: linear-gradient(

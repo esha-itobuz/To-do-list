@@ -1,77 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="/src/styles/css/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>To-Do List</title>
-  <link rel="stylesheet" href="./src/styles/css/styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-</head>
-
-<body>
-  <div class="main-div">
-    <div id="myModal" class="modal">
-      <div class="modal-content">
-        <span class="close-button">&times;</span>
-        <p id="modalMessage"></p>
-        <input type="text" id="modalInput" style="display: none;">
-        <div class="modal-buttons">
-          <button id="modalOkButton">OK</button>
-          <button id="modalCancelButton" style="display: none;">Cancel</button>
+  <body>
+    <div class="main-div">
+      <div id="todo-container">
+        <h1>Welcome to Todo Application</h1>
+        <div class="welcome-routes">
+          <button id="sign-up-button">Sign Up</button>
+          <button id="login-button">Login</button>
         </div>
       </div>
     </div>
-    
-    <div id="todo-container">
-      <div id="header">
-        <h1>&lt; To-Do List /&gt;</h1>
-      </div>
-
-      <div id="todo-form">
-        <div id="to-do-search">
-          <input type="text" id="search-input" placeholder="Search tasks or tags..." />
-          <select id="sort-dropdown">
-            <option value="default">Default Order</option>
-            <option value="alphabetical">A-Z</option>
-            <option value="completed">Completed First</option>
-            <option value="uncompleted">Incomplete First</option>
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-          </select>
-        </div>
-
-        <div id="add-task">
-          <input type="text" id="input-box" placeholder="Add Task" />
-          <button id="input-button">+</button>
-        </div>
-
-        <div id="tags-section">
-          <input type="text" id="tags-input" placeholder="Add tags (e.g., urgent, work, personal)" />
-          <button id="add-tag-button">Add Tag</button>
-        </div>
-
-        <div id="current-tags"></div>
-      </div>
-
-      <ul id="list-container"></ul>
-
-      <div class="counter-container">
-        <div id="task-counters">
-          <div class="counter-item">
-            <span class="counter-label">Completed</span>
-            <span class="counter-value" id="completed-counter">0</span>
-          </div>
-          <div class="counter-item">
-            <span class="counter-label">Incomplete</span>
-            <span class="counter-value" id="uncompleted-counter">0</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <script type="module" src="./src/js/main.js"></script>
-  <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
-</body>
-
+    <script type="module" src="./src/js/main.js"></script>
+  </body>
 </html>

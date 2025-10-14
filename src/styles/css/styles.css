@@ -58,6 +58,42 @@ body .main-div #todo-container {
   overflow: hidden;
   animation: fadeIn 0.5s ease-out;
 }
+body .main-div #todo-container h1 {
+  text-align: center;
+  margin-top: 10px;
+}
+body .main-div #todo-container .welcome-routes {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin: 32px 0 24px 0;
+  padding: 24px 0 12px 0;
+  border-radius: 12px;
+  transition: background 0.3s;
+}
+body .main-div #todo-container .welcome-routes button {
+  padding: 12px 32px;
+  border-radius: 8px;
+  border: none;
+  background: #dc4c3e;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(220, 76, 62, 0.08);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+body .main-div #todo-container .welcome-routes button:hover {
+  background: rgb(208.4907894737, 52.9328947368, 37.8092105263);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 18px rgba(220, 76, 62, 0.13);
+}
+body .main-div #todo-container .welcome-routes button:active {
+  background: rgb(186.9052631579, 47.4526315789, 33.8947368421);
+  transform: scale(0.98);
+}
 body .main-div #todo-container #header {
   padding: 24px 24px 16px;
   background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
