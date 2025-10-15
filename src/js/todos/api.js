@@ -1,14 +1,91 @@
-import { fetchWithAuth } from "../auth/authFetch.js";
+import axios from "axios";
 
 export let USE_API = true;
+const BASE_PATH = "http://localhost:3000/todos";
 
-// 🧩 No need to hardcode full backend URL here — fetchWithAuth handles it
-const BASE_PATH = "/todos";
+const api = axios.create({
+  baseURL: "http://localhost:3000",
+});
+
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      !originalRequest._retry
+    ) {
+      if (isRefreshing) {
+        return new Promise(function (resolve, reject) {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers["Authorization"] = "Bearer " + token;
+            return api(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+      const refreshToken = localStorage.getItem("refreshToken");
+      try {
+        const res = await axios.post(
+          "/auth/refresh",
+          {},
+          {
+            headers: { Authorization: `Bearer ${refreshToken}` },
+            baseURL: "http://localhost:3000",
+          }
+        );
+        const newAccessToken = res.data.accessToken;
+        localStorage.setItem("accessToken", newAccessToken);
+        api.defaults.headers.common["Authorization"] =
+          "Bearer " + newAccessToken;
+        processQueue(null, newAccessToken);
+        return api(originalRequest);
+      } catch (err) {
+        processQueue(err, null);
+        window.location.href = "src/pages/login.html";
+        return Promise.reject(err);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export async function checkAPI() {
   try {
-    const res = await fetchWithAuth(BASE_PATH);
-    USE_API = res.ok;
+    const res = await api.get("/todos");
+    USE_API = res.status === 200;
     console.log("API available:", USE_API);
   } catch (error) {
     USE_API = false;
@@ -19,9 +96,8 @@ export async function checkAPI() {
 export async function fetchTodo(id) {
   if (!USE_API) return null;
   try {
-    const res = await fetchWithAuth(`${BASE_PATH}/${id}`);
-    if (!res.ok) throw new Error("Fetch todo failed");
-    return await res.json();
+    const res = await api.get(`/todos/${id}`);
+    return res.data;
   } catch (error) {
     console.error("Error fetching todo:", error);
     return null;
@@ -31,9 +107,8 @@ export async function fetchTodo(id) {
 export async function fetchTodos() {
   if (!USE_API) return [];
   try {
-    const res = await fetchWithAuth(BASE_PATH);
-    if (!res.ok) throw new Error("Fetch todos failed");
-    return await res.json();
+    const res = await api.get("/todos");
+    return res.data;
   } catch (error) {
     console.error("Error fetching todos:", error);
     return [];
@@ -43,12 +118,8 @@ export async function fetchTodos() {
 export async function createTodo(task, tags) {
   if (!USE_API) return null;
   try {
-    const res = await fetchWithAuth(BASE_PATH, {
-      method: "POST",
-      body: JSON.stringify({ title: task, tags }),
-    });
-    if (!res.ok) throw new Error("Create todo failed");
-    return await res.json();
+    const res = await api.post("/todos", { title: task, tags });
+    return res.data;
   } catch (error) {
     console.error("Error creating todo:", error);
     return null;
@@ -58,12 +129,8 @@ export async function createTodo(task, tags) {
 export async function updateTodo(id, updates) {
   if (!USE_API) return null;
   try {
-    const res = await fetchWithAuth(`${BASE_PATH}/${id}`, {
-      method: "PATCH",
-      body: JSON.stringify(updates),
-    });
-    if (!res.ok) throw new Error("Update todo failed");
-    return await res.json();
+    const res = await api.patch(`/todos/${id}`, updates);
+    return res.data;
   } catch (error) {
     console.error("Error updating todo:", error);
     return null;
@@ -73,9 +140,8 @@ export async function updateTodo(id, updates) {
 export async function deleteTodo(id) {
   if (!USE_API) return null;
   try {
-    const res = await fetchWithAuth(`${BASE_PATH}/${id}`, { method: "DELETE" });
-    if (!res.ok) throw new Error("Delete todo failed");
-    return await res.json();
+    const res = await api.delete(`/todos/${id}`);
+    return res.data;
   } catch (error) {
     console.error("Error deleting todo:", error);
     return null;
@@ -88,9 +154,8 @@ export async function searchTask(searchText, searchFilter) {
     const qs = `searchText=${encodeURIComponent(
       searchText || ""
     )}&searchFilter=${encodeURIComponent(searchFilter || "")}`;
-    const res = await fetchWithAuth(`${BASE_PATH}/search?${qs}`);
-    if (!res.ok) throw new Error("Search request failed");
-    return await res.json();
+    const res = await api.get(`/todos/search?${qs}`);
+    return res.data;
   } catch (e) {
     console.error("Error searching todos:", e);
     return [];
@@ -100,13 +165,14 @@ export async function searchTask(searchText, searchFilter) {
 export async function sortTask(sortFilter) {
   if (!USE_API) return [];
   try {
-    const res = await fetchWithAuth(
-      `${BASE_PATH}/sort?sortFilter=${encodeURIComponent(sortFilter)}`
+    const res = await api.get(
+      `/todos/sort?sortFilter=${encodeURIComponent(sortFilter)}`
     );
-    if (!res.ok) throw new Error("Sort request failed");
-    return await res.json();
+    return res.data;
   } catch (e) {
     console.error("Error sorting todos:", e);
     return [];
   }
 }
+
+export default api;

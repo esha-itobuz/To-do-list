@@ -16,6 +16,16 @@ let currentTags = [];
 let editingTags = [];
 let currentSortOrder = "default";
 
+(function setupLogout() {
+  const logoutBtn = document.getElementById("logout-button");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", function () {
+      localStorage.removeItem("token");
+      window.location.href = "../pages/login.html";
+    });
+  }
+})();
+
 function renderCurrentTags() {
   refs.currentTagsContainer.innerHTML = "";
   currentTags.forEach((tag) => {
