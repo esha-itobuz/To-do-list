@@ -31,7 +31,7 @@ if (loginForm) {
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
         setTimeout(() => {
-          location.href = "./todos.html";
+          location.href = "/src/pages/todos.html";
         }, 1200);
       } else if (data.message) {
         loginMessage.textContent = data.message;

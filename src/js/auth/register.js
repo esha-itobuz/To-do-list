@@ -37,7 +37,7 @@ if (registerForm) {
         registerMessage.classList.add("success");
         registerForm.reset();
         setTimeout(() => {
-          location.href = "./login.html";
+          location.href = "./verify-email.html";
         }, 1800);
       } else {
         registerMessage.textContent = data.message || "Registration failed.";
