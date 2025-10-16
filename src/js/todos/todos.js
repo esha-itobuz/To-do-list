@@ -20,8 +20,9 @@ let currentSortOrder = "default";
   const logoutBtn = document.getElementById("logout-button");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", function () {
-      localStorage.removeItem("token");
-      window.location.href = "../pages/login.html";
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      window.location.href = "/src/pages/login.html";
     });
   }
 })();

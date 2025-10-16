@@ -1,12 +1,12 @@
-function getQueryParam(name) {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get(name);
-}
-
 const resetPasswordForm = document.getElementById("resetPasswordForm");
 const resetPasswordMessage = document.getElementById("resetPasswordMessage");
 
 const API_BASE_URL = "http://localhost:3000";
+
+function getQueryParam(name) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(name);
+}
 
 const email = getQueryParam("email");
 const otp = getQueryParam("otp");
