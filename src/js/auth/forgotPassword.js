@@ -5,11 +5,10 @@ const sendOtpBtn = document.getElementById("sendOtpBtn");
 const verifyOtpBtn = document.getElementById("verifyOtpBtn");
 
 const API_BASE_URL = "http://localhost:3000";
-
 let sentEmail = "";
 
-if (forgotPasswordForm) {
-  forgotPasswordForm.addEventListener("submit", async (e) => {
+if (sendOtpBtn) {
+  sendOtpBtn.addEventListener("click", async (e) => {
     e.preventDefault();
     forgotPasswordMessage.textContent = "";
     forgotPasswordMessage.className = "form-message";
@@ -22,10 +21,10 @@ if (forgotPasswordForm) {
     }
 
     try {
-      const res = await fetch(`${API_BASE_URL}/auth/send-otp`, {
+      const res = await fetch(`${API_BASE_URL}/otp/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, type: "reset" }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -46,41 +45,20 @@ if (forgotPasswordForm) {
       forgotPasswordMessage.classList.add("error");
     }
   });
-
-  verifyOtpBtn.addEventListener("click", async (e) => {
-    e.preventDefault();
-    forgotPasswordMessage.textContent = "";
-    forgotPasswordMessage.className = "form-message";
-
-    const otp = document.getElementById("otp").value.trim();
-    if (!otp || otp.length !== 6) {
-      forgotPasswordMessage.textContent = "Please enter the 6-digit OTP.";
-      forgotPasswordMessage.classList.add("error");
-      return;
-    }
-
-    try {
-      const res = await fetch(`${API_BASE_URL}/auth/reset-password`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: sentEmail, otp }),
-      });
-      const data = await res.json();
-      if (data.otpIncorrectMsg) {
-        forgotPasswordMessage.textContent = data.otpIncorrectMsg;
-        forgotPasswordMessage.classList.add("error");
-      } else if (data.email === sentEmail && !data.otpIncorrectMsg) {
-        window.location.href = `/src/pages/reset-password.html?email=${encodeURIComponent(
-          sentEmail
-        )}&otp=${encodeURIComponent(otp)}`;
-      } else {
-        forgotPasswordMessage.textContent =
-          data.message || "OTP verification failed.";
-        forgotPasswordMessage.classList.add("error");
-      }
-    } catch (err) {
-      forgotPasswordMessage.textContent = "Network error. Please try again.";
-      forgotPasswordMessage.classList.add("error");
-    }
-  });
 }
+
+verifyOtpBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  forgotPasswordMessage.textContent = "";
+  forgotPasswordMessage.className = "form-message";
+
+  const otp = document.getElementById("otp").value.trim();
+  if (!otp || otp.length !== 6) {
+    forgotPasswordMessage.textContent = "Please enter the 6-digit OTP.";
+    forgotPasswordMessage.classList.add("error");
+    return;
+  }
+  window.location.href = `/src/pages/reset-password.html?email=${encodeURIComponent(
+    sentEmail
+  )}&otp=${encodeURIComponent(otp)}`;
+});

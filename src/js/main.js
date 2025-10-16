@@ -5,6 +5,8 @@ signUpButton.addEventListener(
   "click",
   async (e) => (window.location.href = "src/pages/register.html")
 );
-loginButton.addEventListener("click", async (e) => {
-  window.location.href = "src/pages/login.html";
-});
+
+loginButton.addEventListener(
+  "click",
+  async (e) => (window.location.href = "src/pages/login.html")
+);

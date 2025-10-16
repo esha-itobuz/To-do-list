@@ -40,28 +40,29 @@ if (resetPasswordForm) {
     }
 
     try {
-      const res = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+      const res = await fetch(`${API_BASE_URL}/otp/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp, newPassword, confirmNewPassword }),
+        body: JSON.stringify({
+          email,
+          otp,
+          type: "reset",
+          newPassword,
+          confirmNewPassword,
+        }),
       });
       const data = await res.json();
-      if (data.passwordResetSuccessMsg) {
-        resetPasswordMessage.textContent = data.passwordResetSuccessMsg;
+      if (res.ok) {
+        resetPasswordMessage.textContent =
+          data.message || "Password reset successfully. You can login now.";
         resetPasswordMessage.classList.add("success");
         resetPasswordForm.reset();
         setTimeout(() => {
           window.location.href = "/src/pages/login.html";
         }, 1500);
-      } else if (data.passwordNotMatchMsg) {
-        resetPasswordMessage.textContent = data.passwordNotMatchMsg;
-        resetPasswordMessage.classList.add("error");
-      } else if (data.otpIncorrectMsg) {
-        resetPasswordMessage.textContent = data.otpIncorrectMsg;
-        resetPasswordMessage.classList.add("error");
       } else {
         resetPasswordMessage.textContent =
-          data.passwordResetErrorMsg || "Password reset failed.";
+          data.message || "Password reset failed.";
         resetPasswordMessage.classList.add("error");
       }
     } catch (err) {

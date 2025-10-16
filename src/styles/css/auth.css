@@ -106,7 +106,7 @@ button[type="submit"]:hover {
   color: #ef4444;
 }
 
-/* --- Login Page Specific Styles --- */
+/* --- Login Page  --- */
 
 .forgot-password {
   margin-top: 1.1rem;
@@ -140,7 +140,7 @@ button[type="submit"]:hover {
   }
 }
 
-/* --- Reset Password Page Styles --- */
+/* --- Reset Password Page --- */
 .reset-password-info {
   margin-bottom: 1.2rem;
   color: #444;
@@ -190,7 +190,7 @@ button[type="submit"]:hover {
   width: 100%;
   box-sizing: border-box;
 }
-/* --- Verify Email Page Styles --- */
+/* --- Verify Email Page --- */
 
 #auth-container {
   max-width: 400px;
@@ -246,6 +246,7 @@ button[type="submit"]:hover {
   cursor: pointer;
   margin-top: 0.5rem;
   transition: background 0.2s;
+  
 }
 #verifyOtpBtn {
   margin-left: 55px;

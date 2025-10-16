@@ -26,10 +26,10 @@ sendOtpBtn.addEventListener("click", async (e) => {
   sendOtpBtn.disabled = true;
   showMessage("Sending OTP...");
   try {
-    const res = await fetch("http://localhost:3000/auth/resend-verification", {
+    const res = await fetch("http://localhost:3000/otp/send", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, type: "verify" }),
     });
     const data = await res.json();
     if (res.ok) {
@@ -55,10 +55,10 @@ verifyOtpBtn.addEventListener("click", async (e) => {
   verifyOtpBtn.disabled = true;
   showMessage("Verifying OTP...");
   try {
-    const res = await fetch("http://localhost:3000/auth/verify-email", {
+    const res = await fetch("http://localhost:3000/otp/verify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, otp }),
+      body: JSON.stringify({ email, otp, type: "verify" }),
     });
     const data = await res.json();
     if (res.ok) {
