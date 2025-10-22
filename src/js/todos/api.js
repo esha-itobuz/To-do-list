@@ -1,11 +1,10 @@
 import axios from "axios";
 
 export let USE_API = true;
-const BASE_PATH = "http://localhost:3000/todos";
 
 const api = axios.create({
   baseURL: "http://localhost:3000",
-});
+}); // instance create
 
 api.interceptors.request.use(
   (config) => {
@@ -15,8 +14,8 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
-);
+  (error) => Promise.reject(error) //static method: returns Promise object thats rejected with reason
+); //before request is sent
 
 let isRefreshing = false;
 let failedQueue = [];
@@ -80,7 +79,7 @@ api.interceptors.response.use(
     }
     return Promise.reject(error);
   }
-);
+); //working with response data
 
 export async function checkAPI() {
   try {

@@ -13,16 +13,14 @@ if (registerForm) {
     const password = registerForm.password.value;
     const confirmPassword = registerForm.confirmPassword.value;
 
-    if (!email || !password || !confirmPassword) {
-      registerMessage.textContent = "All fields are required.";
-      registerMessage.classList.add("error");
-      return;
-    }
-    if (password !== confirmPassword) {
-      registerMessage.textContent = "Passwords do not match.";
-      registerMessage.classList.add("error");
-      return;
-    }
+    // if (!email || !password || !confirmPassword) {
+    //   
+    //   return;
+    // }
+    // if (password !== confirmPassword) {
+    //  
+    //   return;
+    // }
 
     try {
       const res = await fetch(`${API_BASE_URL}/auth/register`, {
@@ -30,7 +28,10 @@ if (registerForm) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const data = await res.json();
+
+      let data;
+      data = await res.json();
+
       if (res.ok && data.success) {
         registerMessage.textContent =
           data.message || "Registration successful! Please verify your email.";
@@ -44,8 +45,7 @@ if (registerForm) {
         registerMessage.classList.add("error");
       }
     } catch (err) {
-      registerMessage.textContent = "Network error. Please try again.";
-      registerMessage.classList.add("error");
+      console.error("Registration network/unexpected error:", err);
     }
   });
 }

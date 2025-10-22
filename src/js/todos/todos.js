@@ -27,6 +27,7 @@ let currentSortOrder = "default";
   }
 })();
 
+// the small tag badges under the tags entry
 function renderCurrentTags() {
   refs.currentTagsContainer.innerHTML = "";
   currentTags.forEach((tag) => {
@@ -40,6 +41,7 @@ function renderCurrentTags() {
   });
 }
 
+// "Add Tag"
 function addTagLocal(tag) {
   if (tag && !currentTags.includes(tag)) {
     currentTags.push(tag);
@@ -47,19 +49,23 @@ function addTagLocal(tag) {
   }
 }
 
+// trigger on clicking 'x' on CurrentTags
 function removeTag(tag) {
   currentTags = currentTags.filter((t) => t !== tag);
   renderCurrentTags();
 }
 
+// clicking '×' inside the badges in the modal.
 function removeEditingTag(tag) {
   editingTags = editingTags.filter((t) => t !== tag);
   renderEditingTags();
 }
 
+// so that innerhtml can use them
 window.removeTag = removeTag;
 window.removeEditingTag = removeEditingTag;
 
+// tags on the edit modal
 function renderEditingTags() {
   const tagsContainer = document.getElementById("modal-tags-container");
   if (!tagsContainer) return;
@@ -75,15 +81,16 @@ function renderEditingTags() {
   });
 }
 
-async function addTask(
-  taskText,
+// creates and renders tasks
+async function addTask({
+  title,
   tags,
-  completed = false,
+  isCompleted = false,
   id = null,
-  skipSort = false
-) {
+  skipSort = false,
+} = {}) {
   const task =
-    typeof taskText === "string" ? taskText.trim() : refs.inputBox.value.trim();
+    typeof title === "string" ? title.trim() : refs.inputBox.value.trim();
   const taskTags = tags || [...currentTags];
 
   if (!task) {
@@ -96,7 +103,7 @@ async function addTask(
     newTodo = await createTodo(task, taskTags);
     if (!newTodo) return;
   } else {
-    newTodo = { id, title: task, tags: taskTags, isCompleted: completed };
+    newTodo = { id, title: task, tags: taskTags, isCompleted };
   }
 
   const li = document.createElement("li");
@@ -162,6 +169,7 @@ async function addTask(
 
   updateCounters();
 
+  // otherwise infinite api calls are being made on sort
   if (!skipSort && currentSortOrder !== "default") {
     sortTasks();
   }
@@ -313,7 +321,13 @@ async function performSearch() {
     const tasks = await searchTask(query, searchFilter);
     refs.listContainer.innerHTML = "";
     (tasks || []).forEach((task) =>
-      addTask(task.title, task.tags || [], task.isCompleted, task.id, true)
+      addTask({
+        title: task.title,
+        tags: task.tags || [],
+        isCompleted: task.isCompleted,
+        id: task.id,
+        skipSort: true,
+      })
     );
   } catch (e) {
     console.error("performSearch error:", e);
@@ -328,41 +342,18 @@ async function sortTasks() {
     const tasks = await sortTask(sortOrder);
     refs.listContainer.innerHTML = "";
     (tasks || []).forEach((task) =>
-      addTask(task.title, task.tags || [], task.isCompleted, task.id, true)
+      addTask({
+        title: task.title,
+        tags: task.tags || [],
+        isCompleted: task.isCompleted,
+        id: task.id,
+        skipSort: true,
+      })
     );
     return;
   } catch (e) {
     console.error("Server sort failed:", e);
   }
-
-  const tasksArray = Array.from(refs.listContainer.children);
-
-  tasksArray.sort((a, b) => {
-    const aText = a.querySelector(".task-text").textContent.toLowerCase();
-    const bText = b.querySelector(".task-text").textContent.toLowerCase();
-    const aCompleted = a.classList.contains("completed");
-    const bCompleted = b.classList.contains("completed");
-    const aId = parseInt(a.dataset.id);
-    const bId = parseInt(b.dataset.id);
-
-    switch (sortOrder) {
-      case "alphabetical":
-        return aText.localeCompare(bText);
-      case "completed":
-        return Number(bCompleted) - Number(aCompleted);
-      case "uncompleted":
-        return Number(aCompleted) - Number(bCompleted);
-      case "newest":
-        return bId - aId;
-      case "oldest":
-        return aId - bId;
-      default:
-        return 0;
-    }
-  });
-
-  refs.listContainer.innerHTML = "";
-  tasksArray.forEach((task) => refs.listContainer.appendChild(task));
 }
 
 document.getElementById("input-button").addEventListener("click", function () {
@@ -417,6 +408,12 @@ window.addEventListener("click", function (event) {
   const tasks = await fetchTodos();
   refs.listContainer.innerHTML = "";
   tasks.forEach((task) => {
-    addTask(task.title, task.tags || [], task.isCompleted, task.id, true);
+    addTask({
+      title: task.title,
+      tags: task.tags || [],
+      isCompleted: task.isCompleted,
+      id: task.id,
+      skipSort: true,
+    });
   });
 })();

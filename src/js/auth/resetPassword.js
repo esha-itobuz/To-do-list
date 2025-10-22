@@ -16,7 +16,9 @@ if (!email || !otp) {
     resetPasswordMessage.textContent = "Invalid or expired reset link.";
     resetPasswordMessage.className = "form-message error";
   }
-  if (resetPasswordForm) resetPasswordForm.style.display = "none";
+  if (resetPasswordForm) {
+    resetPasswordForm.style.display = "none";
+  }
 }
 
 if (resetPasswordForm) {
@@ -28,16 +30,14 @@ if (resetPasswordForm) {
     const newPassword = resetPasswordForm.newPassword.value;
     const confirmNewPassword = resetPasswordForm.confirmNewPassword.value;
 
-    if (!newPassword || !confirmNewPassword) {
-      resetPasswordMessage.textContent = "All fields are required.";
-      resetPasswordMessage.classList.add("error");
-      return;
-    }
-    if (newPassword !== confirmNewPassword) {
-      resetPasswordMessage.textContent = "Passwords do not match.";
-      resetPasswordMessage.classList.add("error");
-      return;
-    }
+    // if (!newPassword || !confirmNewPassword) {
+    //
+    //   return;
+    // }
+    // if (newPassword !== confirmNewPassword) {
+    //
+    //   return;
+    // }
 
     try {
       const res = await fetch(`${API_BASE_URL}/otp/verify`, {
@@ -51,7 +51,9 @@ if (resetPasswordForm) {
           confirmNewPassword,
         }),
       });
-      const data = await res.json();
+      let data;
+      data = await res.json();
+
       if (res.ok) {
         resetPasswordMessage.textContent =
           data.message || "Password reset successfully. You can login now.";
@@ -66,8 +68,7 @@ if (resetPasswordForm) {
         resetPasswordMessage.classList.add("error");
       }
     } catch (err) {
-      resetPasswordMessage.textContent = "Network error. Please try again.";
-      resetPasswordMessage.classList.add("error");
+      console.error("Network/unexpected error during password reset:", err);
     }
   });
 }
