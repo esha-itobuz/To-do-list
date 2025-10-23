@@ -13,7 +13,11 @@ function showMessage(msg, isError = false) {
     form.appendChild(msgDiv);
   }
   msgDiv.textContent = msg;
-  msgDiv.style.color = isError ? "red" : "green";
+  if (isError) {
+    msgDiv.style.color = "red";
+  } else {
+    msgDiv.style.color = "green";
+  }
 }
 
 sendOtpBtn.addEventListener("click", async (e) => {
@@ -49,10 +53,7 @@ verifyOtpBtn.addEventListener("click", async (e) => {
   e.preventDefault();
   const email = emailInput.value.trim();
   const otp = otpInput.value.trim();
-  // if (!otp || otp.length !== 6) {
 
-  //   return;
-  // }
   verifyOtpBtn.disabled = true;
   showMessage("Verifying OTP...");
   try {

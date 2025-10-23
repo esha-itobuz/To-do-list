@@ -35,8 +35,7 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   background-color: beige;
   min-height: 100vh;
   padding: 20px;
@@ -58,6 +57,42 @@ body .main-div #todo-container {
   border: 2px solid rgba(128, 128, 128, 0.642);
   overflow: hidden;
   animation: fadeIn 0.5s ease-out;
+}
+body .main-div #todo-container h1 {
+  text-align: center;
+  margin-top: 10px;
+}
+body .main-div #todo-container .welcome-routes {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin: 32px 0 24px 0;
+  padding: 24px 0 12px 0;
+  border-radius: 12px;
+  transition: background 0.3s;
+}
+body .main-div #todo-container .welcome-routes button {
+  padding: 12px 32px;
+  border-radius: 8px;
+  border: none;
+  background: #dc4c3e;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(220, 76, 62, 0.08);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+body .main-div #todo-container .welcome-routes button:hover {
+  background: rgb(208.4907894737, 52.9328947368, 37.8092105263);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 18px rgba(220, 76, 62, 0.13);
+}
+body .main-div #todo-container .welcome-routes button:active {
+  background: rgb(186.9052631579, 47.4526315789, 33.8947368421);
+  transform: scale(0.98);
 }
 body .main-div #todo-container #header {
   padding: 24px 24px 16px;
@@ -96,9 +131,7 @@ body .main-div #todo-container #todo-form #tags-input {
   transition: all 0.2s ease;
   outline: none;
 }
-body .main-div #todo-container #todo-form #search-input::-moz-placeholder,
-body .main-div #todo-container #todo-form #input-box::-moz-placeholder,
-body .main-div #todo-container #todo-form #tags-input::-moz-placeholder {
+body .main-div #todo-container #todo-form #search-input::-moz-placeholder, body .main-div #todo-container #todo-form #input-box::-moz-placeholder, body .main-div #todo-container #todo-form #tags-input::-moz-placeholder {
   color: #9ca3af;
 }
 body .main-div #todo-container #todo-form #search-input::placeholder,
@@ -206,13 +239,7 @@ body .main-div #todo-container #todo-form #current-tags .tag-badge .remove-tag {
   color: #0066cc;
   transition: color 0.2s;
 }
-body
-  .main-div
-  #todo-container
-  #todo-form
-  #current-tags
-  .tag-badge
-  .remove-tag:hover {
+body .main-div #todo-container #todo-form #current-tags .tag-badge .remove-tag:hover {
   color: #dc4c3e;
 }
 body .main-div #todo-container ul {
@@ -270,25 +297,25 @@ body .main-div #todo-container li label {
   cursor: pointer;
   min-height: 24px;
 }
-body .main-div #todo-container li label input[type="checkbox"] {
+body .main-div #todo-container li label input[type=checkbox] {
   width: 20px;
   height: 20px;
   border: 2px solid #e9ecef;
   border-radius: 6px;
   cursor: pointer;
   -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+     -moz-appearance: none;
+          appearance: none;
   background: #ffffff;
   transition: all 0.2s ease;
   position: relative;
   flex-shrink: 0;
 }
-body .main-div #todo-container li label input[type="checkbox"]:checked {
+body .main-div #todo-container li label input[type=checkbox]:checked {
   background: #28a745;
   border-color: #28a745;
 }
-body .main-div #todo-container li label input[type="checkbox"]:checked::after {
+body .main-div #todo-container li label input[type=checkbox]:checked::after {
   content: "✓";
   position: absolute;
   top: 50%;
@@ -298,7 +325,7 @@ body .main-div #todo-container li label input[type="checkbox"]:checked::after {
   font-size: 12px;
   font-weight: bold;
 }
-body .main-div #todo-container li label input[type="checkbox"]:hover {
+body .main-div #todo-container li label input[type=checkbox]:hover {
   border-color: #28a745;
 }
 body .main-div #todo-container li label .task-text {
@@ -383,25 +410,13 @@ body .main-div #todo-container .counter-container #task-counters .counter-item {
   align-items: center;
   gap: 4px;
 }
-body
-  .main-div
-  #todo-container
-  .counter-container
-  #task-counters
-  .counter-item
-  .counter-label {
+body .main-div #todo-container .counter-container #task-counters .counter-item .counter-label {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: #9ca3af;
 }
-body
-  .main-div
-  #todo-container
-  .counter-container
-  #task-counters
-  .counter-item
-  .counter-value {
+body .main-div #todo-container .counter-container #task-counters .counter-item .counter-value {
   font-size: 18px;
   font-weight: 600;
   color: #202020;
@@ -416,7 +431,7 @@ body .main-div .modal {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
   -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
+          backdrop-filter: blur(4px);
   animation: fadeIn 0.2s ease-out;
 }
 body .main-div .modal .modal-content {
@@ -505,12 +520,7 @@ body .main-div .modal .modal-content .modal-buttons button#modalCancelButton {
   color: #6c757d;
   border: 2px solid #e9ecef;
 }
-body
-  .main-div
-  .modal
-  .modal-content
-  .modal-buttons
-  button#modalCancelButton:hover {
+body .main-div .modal .modal-content .modal-buttons button#modalCancelButton:hover {
   background: #f8f9fa;
   border-color: #6c757d;
   color: #202020;
@@ -576,13 +586,7 @@ body .main-div .modal .modal-content .modal-buttons button:active {
   body .main-div #todo-container .counter-container #task-counters {
     gap: 16px;
   }
-  body
-    .main-div
-    #todo-container
-    .counter-container
-    #task-counters
-    .counter-item
-    .counter-value {
+  body .main-div #todo-container .counter-container #task-counters .counter-item .counter-value {
     font-size: 16px;
   }
   body .main-div .modal .modal-content {
@@ -620,4 +624,4 @@ body .main-div .modal .modal-content .modal-buttons button:active {
   body .main-div #todo-container .modal .modal-content .modal-buttons button {
     width: 100%;
   }
-} /*# sourceMappingURL=styles.css.map */
+}/*# sourceMappingURL=styles.css.map */

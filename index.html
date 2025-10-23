@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>To-Do List</title>
-    <link rel="stylesheet" href="/src/styles/css/styles.css" />
+    <link rel="stylesheet" href="/src/styles/scss/welcome.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -12,15 +12,32 @@
   </head>
 
   <body>
-    <div class="main-div">
-      <div id="todo-container">
-        <h1>&lt; Welcome to Todo Application /&gt;</h1>
-        <div class="welcome-routes">
-          <button id="sign-up-button">Sign Up</button>
-          <button id="login-button">Login</button>
+    <div class="main-container">
+      <div class="hero-card">
+        <div class="hero-content">
+          <h1>
+            <span class="bracket">&lt;</span> Welcome to
+            <strong>Todo Application</strong> <span class="bracket">/&gt;</span>
+          </h1>
+          <p class="subtitle">
+            Stay organized, boost productivity, and manage your day
+            effortlessly.
+          </p>
+          <div class="action-buttons">
+            <button id="sign-up-button" class="btn primary">
+              <i class="fa-solid fa-user-plus"></i> Sign Up
+            </button>
+            <button id="login-button" class="btn secondary">
+              <i class="fa-solid fa-right-to-bracket"></i> Login
+            </button>
+          </div>
+        </div>
+        <div class="hero-illustration">
+          <i class="fa-solid fa-list-check"></i>
         </div>
       </div>
     </div>
+
     <script type="module" src="./src/js/main.js"></script>
   </body>
 </html>

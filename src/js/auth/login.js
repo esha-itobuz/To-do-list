@@ -27,11 +27,24 @@ if (loginForm) {
       let data;
       data = await res.json();
 
+      if (res.status === 403 && data.message?.includes("not verified")) {
+        loginMessage.textContent = data.message;
+        loginMessage.classList.add("error");
+
+        setTimeout(() => {
+          window.location.href = `/src/pages/verify-email.html?email=${encodeURIComponent(
+            email
+          )}`;
+        }, 1800);
+
+        return;
+      }
+
       if (res.ok && data.accessToken) {
         loginMessage.textContent = "Login successful! Redirecting...";
         loginMessage.classList.add("success");
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
+        localStorage.setItem("access_token", data.accessToken);
+        localStorage.setItem("refresh_token", data.refreshToken);
         setTimeout(() => {
           location.href = "/src/pages/todos.html";
         }, 1200);

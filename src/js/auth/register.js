@@ -11,14 +11,9 @@ if (registerForm) {
 
     const email = registerForm.email.value.trim();
     const password = registerForm.password.value;
-    const confirmPassword = registerForm.confirmPassword.value;
 
     // if (!email || !password || !confirmPassword) {
     //   
-    //   return;
-    // }
-    // if (password !== confirmPassword) {
-    //  
     //   return;
     // }
 

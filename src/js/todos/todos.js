@@ -20,8 +20,8 @@ let currentSortOrder = "default";
   const logoutBtn = document.getElementById("logout-button");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", function () {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
       window.location.href = "/src/pages/login.html";
     });
   }
@@ -89,8 +89,12 @@ async function addTask({
   id = null,
   skipSort = false,
 } = {}) {
-  const task =
-    typeof title === "string" ? title.trim() : refs.inputBox.value.trim();
+  let task;
+  if (typeof title === "string") {
+    task = title.trim();
+  } else {
+    task = refs.inputBox.value.trim();
+  }
   const taskTags = tags || [...currentTags];
 
   if (!task) {
@@ -112,7 +116,13 @@ async function addTask({
     <label>
       <div class="task">
         <div class="task-head">
-          <input type="checkbox" ${newTodo.isCompleted ? "checked" : ""}>
+          <input type="checkbox" ${(() => {
+            if (newTodo.isCompleted) {
+              return "checked";
+            } else {
+              return "";
+            }
+          })()}>
           <span class="task-text">${newTodo.title}</span>
         </div>
         <div class="task-tags">
@@ -248,8 +258,13 @@ function showModal(message, type, currentValue = "") {
     if (tagsSection) {
       tagsSection.remove();
     }
-    refs.cancelButton.style.display =
-      type === "delete" ? "inline-block" : "none";
+    let displayStyle;
+    if (type === "delete") {
+      displayStyle = "inline-block";
+    } else {
+      displayStyle = "none";
+    }
+    refs.cancelButton.style.display = displayStyle;
   }
 
   refs.modal.style.display = "block";
