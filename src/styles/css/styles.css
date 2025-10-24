@@ -36,7 +36,9 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background-color: beige;
+  background-image: url("https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjEwMTQtYmctMDJhLWt0Mjh2eXd6LmpwZw.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
   min-height: 100vh;
   padding: 20px;
   color: #202020;
@@ -54,7 +56,6 @@ body .main-div #todo-container {
   max-width: 700px;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-  border: 2px solid rgba(128, 128, 128, 0.642);
   overflow: hidden;
   animation: fadeIn 0.5s ease-out;
 }
@@ -106,6 +107,33 @@ body .main-div #todo-container #header h1 {
   color: #202020;
   text-align: center;
   letter-spacing: -0.5px;
+}
+body .main-div #todo-container #header .header-actions {
+  display: flex;
+  align-items: center;
+}
+body .main-div #todo-container #header .header-actions .profile-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+}
+body .main-div #todo-container #header .header-actions .profile-button img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(233, 236, 239, 0.8);
+}
+body .main-div #todo-container #header .header-actions .profile-button i {
+  color: #6c757d;
+}
+body .main-div #todo-container #header .header-actions .profile-button:hover i {
+  color: #dc4c3e;
 }
 body .main-div #todo-container #todo-form {
   padding: 20px 24px;

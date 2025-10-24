@@ -1,21 +1,53 @@
 const forgotPasswordForm = document.getElementById("forgotPasswordForm");
-const forgotPasswordMessage = document.getElementById("forgotPasswordMessage");
 const otpSection = document.getElementById("otpSection");
 const sendOtpBtn = document.getElementById("sendOtpBtn");
 const verifyOtpBtn = document.getElementById("verifyOtpBtn");
 
 const API_BASE_URL = "http://localhost:3000";
-
 let sentEmail = "";
+
+function showToast(message, type = "info") {
+  let bgColor;
+  switch (type) {
+    case "success":
+      bgColor = "linear-gradient(to right, #16a34a, #22c55e)";
+      break;
+    case "error":
+      bgColor = "linear-gradient(to right, #dc2626, #ef4444)";
+      break;
+    default:
+      bgColor = "linear-gradient(to right, #dc4c3e, #f87171)";
+  }
+
+  Toastify({
+    text: message,
+    duration: 3500,
+    gravity: "top",
+    position: "right",
+    close: true,
+    stopOnFocus: true,
+    style: {
+      background: bgColor,
+      borderRadius: "8px",
+      color: "#fff",
+      fontWeight: "500",
+      boxShadow: "0 4px 14px rgba(0, 0, 0, 0.1)",
+    },
+  }).showToast();
+}
 
 if (forgotPasswordForm) {
   forgotPasswordForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-
-    forgotPasswordMessage.textContent = "";
-    forgotPasswordMessage.className = "form-message";
-
     const email = forgotPasswordForm.email.value.trim();
+
+    if (!email) {
+      showToast("Please enter your email address.", "error");
+      return;
+    }
+
+    sendOtpBtn.disabled = true;
+    showToast("Sending OTP...", "info");
 
     try {
       const res = await fetch(`${API_BASE_URL}/otp/send`, {
@@ -23,34 +55,38 @@ if (forgotPasswordForm) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, type: "reset" }),
       });
-      let data;
-      data = await res.json();
+
+      const data = await res.json();
 
       if (res.ok) {
-        forgotPasswordMessage.textContent = data.message;
-        forgotPasswordMessage.classList.add("success");
+        showToast(data.message, "success");
         otpSection.style.display = "block";
         sentEmail = email;
         forgotPasswordForm.email.readOnly = true;
         sendOtpBtn.disabled = true;
       } else {
-        forgotPasswordMessage.textContent = data.message;
-        forgotPasswordMessage.classList.add("error");
+        showToast(data.message, "error");
       }
     } catch (err) {
       console.error("Network or unexpected error sending OTP:", err);
+      showToast("Network error while sending OTP.", "error");
     }
+
+    sendOtpBtn.disabled = false;
   });
 
   verifyOtpBtn.addEventListener("click", async (e) => {
     e.preventDefault();
-    forgotPasswordMessage.textContent = "";
-    forgotPasswordMessage.className = "form-message";
 
     const otp = document.getElementById("otp").value.trim();
-    // if (!otp || otp.length !== 6) {
-    //   return;
-    // }
+
+    if (!otp || otp.length !== 6) {
+      showToast("Please enter a valid 6-digit OTP.", "error");
+      return;
+    }
+
+    verifyOtpBtn.disabled = true;
+    showToast("Verifying OTP...", "info");
 
     try {
       const res = await fetch(`${API_BASE_URL}/otp/check`, {
@@ -58,31 +94,30 @@ if (forgotPasswordForm) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: sentEmail, otp, type: "reset" }),
       });
+
       let data;
       try {
         data = await res.json();
-      } catch (parseErr) {
+      } catch {
         const text = await res.text();
-        data = { message: text || res.statusText || "OTP verification failed" };
+        data = { message: text || "Invalid OTP response" };
       }
-      console.log("OTP check response:", res.status, data);
 
-      if (res.ok && data.message && /valid/i.test(data.message)) {
-        forgotPasswordMessage.textContent =
-          data.message || "OTP verified. Redirecting to Reset Password Page.";
-
+      if (res.ok && /valid/i.test(data.message)) {
+        showToast(data.message, "success");
         setTimeout(() => {
           window.location.href = `/src/pages/reset-password.html?email=${encodeURIComponent(
             sentEmail
           )}&otp=${encodeURIComponent(otp)}`;
-        }, 600);
+        }, 1000);
       } else {
-        forgotPasswordMessage.textContent =
-          data.message || "OTP verification failed.";
-        forgotPasswordMessage.classList.add("error");
+        showToast(data.message, "error");
       }
     } catch (err) {
-      console.error("Network or parsing error during OTP check:", err);
+      console.error("Error verifying OTP:", err);
+      showToast("Network error during OTP verification.", "error");
     }
+
+    verifyOtpBtn.disabled = false;
   });
 }

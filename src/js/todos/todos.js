@@ -27,6 +27,29 @@ let currentSortOrder = "default";
   }
 })();
 
+(function setupProfileButton() {
+  const profileBtn = document.getElementById("profile-button");
+  const avatarImg = document.getElementById("profile-avatar");
+  const fallback = document.getElementById("profile-fallback");
+
+  try {
+    const photo = localStorage.getItem("profile_photo");
+    if (photo && avatarImg) {
+      avatarImg.src = photo;
+      avatarImg.style.display = "block";
+      if (fallback) fallback.style.display = "none";
+    }
+  } catch (e) {
+    console.error("profile photo load error", e);
+  }
+
+  if (profileBtn) {
+    profileBtn.addEventListener("click", function () {
+      window.location.href = "/src/pages/profile.html";
+    });
+  }
+})();
+
 // the small tag badges under the tags entry
 function renderCurrentTags() {
   refs.currentTagsContainer.innerHTML = "";

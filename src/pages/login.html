@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login | To-Do List</title>
     <link rel="stylesheet" href="../styles/scss/auth.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
   </head>
   <body>
     <div class="auth-container">
@@ -22,7 +27,6 @@
         <p class="auth-link">
           Don't have an account? <a href="register.html">Sign Up</a>
         </p>
-        <div id="loginMessage" class="form-message"></div>
       </form>
       <div class="forgot-password">
         <a href="forgot-password.html" id="forgotPasswordLink"
@@ -30,6 +34,7 @@
         >
       </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script type="module" src="../js/auth/login.js"></script>
   </body>
 </html>

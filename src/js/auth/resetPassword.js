@@ -1,6 +1,5 @@
 const resetPasswordForm = document.getElementById("resetPasswordForm");
 const resetPasswordMessage = document.getElementById("resetPasswordMessage");
-
 const API_BASE_URL = "http://localhost:3000";
 
 function getQueryParam(name) {
@@ -11,33 +10,60 @@ function getQueryParam(name) {
 const email = getQueryParam("email");
 const otp = getQueryParam("otp");
 
+function showToast(message, type = "info") {
+  let bgColor;
+  switch (type) {
+    case "success":
+      bgColor = "linear-gradient(to right, #16a34a, #22c55e)";
+      break;
+    case "error":
+      bgColor = "linear-gradient(to right, #dc2626, #ef4444)";
+      break;
+    default:
+      bgColor = "linear-gradient(to right, #dc4c3e, #c53e33)";
+  }
+
+  Toastify({
+    text: message,
+    duration: 3500,
+    gravity: "top",
+    position: "right",
+    close: true,
+    stopOnFocus: true,
+    style: {
+      background: bgColor,
+      borderRadius: "8px",
+      color: "#fff",
+      fontWeight: "500",
+      boxShadow: "0 4px 14px rgba(0, 0, 0, 0.1)",
+    },
+  }).showToast();
+}
+
 if (!email || !otp) {
-  if (resetPasswordMessage) {
-    resetPasswordMessage.textContent = "Invalid or expired reset link.";
-    resetPasswordMessage.className = "form-message error";
-  }
-  if (resetPasswordForm) {
-    resetPasswordForm.style.display = "none";
-  }
+  if (resetPasswordForm) resetPasswordForm.style.display = "none";
+  showToast("Cannot reset password", "error");
 }
 
 if (resetPasswordForm) {
   resetPasswordForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    resetPasswordMessage.textContent = "";
-    resetPasswordMessage.className = "form-message";
 
-    const newPassword = resetPasswordForm.newPassword.value;
-    const confirmNewPassword = resetPasswordForm.confirmNewPassword.value;
+    const newPassword = resetPasswordForm.newPassword.value.trim();
+    const confirmNewPassword =
+      resetPasswordForm.confirmNewPassword.value.trim();
 
-    // if (!newPassword || !confirmNewPassword) {
-    //
-    //   return;
-    // }
-    // if (newPassword !== confirmNewPassword) {
-    //
-    //   return;
-    // }
+    if (!newPassword || !confirmNewPassword) {
+      showToast("Please fill out both password fields.", "error");
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      showToast("Passwords do not match.", "error");
+      return;
+    }
+
+    showToast("Resetting your password...", "info");
 
     try {
       const res = await fetch(`${API_BASE_URL}/otp/verify`, {
@@ -51,24 +77,21 @@ if (resetPasswordForm) {
           confirmNewPassword,
         }),
       });
-      let data;
-      data = await res.json();
+
+      const data = await res.json();
 
       if (res.ok) {
-        resetPasswordMessage.textContent =
-          data.message || "Password reset successfully. You can login now.";
-        resetPasswordMessage.classList.add("success");
+        showToast(data.message, "success");
         resetPasswordForm.reset();
         setTimeout(() => {
           window.location.href = "/src/pages/login.html";
-        }, 1500);
+        }, 1200);
       } else {
-        resetPasswordMessage.textContent =
-          data.message || "Password reset failed.";
-        resetPasswordMessage.classList.add("error");
+        showToast(data.message, "error");
       }
     } catch (err) {
       console.error("Network/unexpected error during password reset:", err);
+      showToast("Network error while resetting password.", "error");
     }
   });
 }

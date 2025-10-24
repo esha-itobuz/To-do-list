@@ -64,10 +64,10 @@ $font-weight-semibold: 600;
 
 body {
   font-family: $font-family;
-  // background-image: url("https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjEwMTQtYmctMDJhLWt0Mjh2eXd6LmpwZw.jpg");
-  // background-size: cover;
-  // background-repeat: no-repeat;
-  background-color: beige;
+  background-image: url("https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjEwMTQtYmctMDJhLWt0Mjh2eXd6LmpwZw.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  // background-color: beige;
   min-height: 100vh;
   padding: 20px;
   color: $text-primary;
@@ -85,7 +85,6 @@ body {
       max-width: 700px;
       border-radius: $border-radius;
       box-shadow: $shadow-subtle;
-      border: 2px solid rgba(128, 128, 128, 0.642);
       overflow: hidden;
       animation: fadeIn 0.5s ease-out;
 
@@ -146,6 +145,38 @@ body {
           color: $text-primary;
           text-align: center;
           letter-spacing: -0.5px;
+        }
+
+        .header-actions {
+          display: flex;
+          align-items: center;
+
+          .profile-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+
+            img {
+              width: 36px;
+              height: 36px;
+              border-radius: 50%;
+              object-fit: cover;
+              border: 2px solid rgba($border-color, 0.8);
+            }
+
+            i {
+              color: $text-secondary;
+            }
+
+            &:hover i {
+              color: $accent-color;
+            }
+          }
         }
       }
 
