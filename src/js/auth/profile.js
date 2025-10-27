@@ -11,39 +11,30 @@ const cancelBtn = document.getElementById("cancel-profile");
 const backBtn = document.getElementById("back-to-todos");
 
 async function loadProfile() {
-  const savedEmail = localStorage.getItem("profile_email");
-  const savedName = localStorage.getItem("profile_name");
-  const savedPhoto = localStorage.getItem("profile_photo");
+  const token = localStorage.getItem("access_token");
+  if (!token) return;
 
-  if (savedEmail) emailInput.value = savedEmail;
-  if (savedName) nameInput.value = savedName;
-  if (savedPhoto) {
-    profilePhoto.src = savedPhoto;
-    profilePhoto.style.display = "block";
-    profilePhotoFallback.style.display = "none";
-  }
+  try {
+    const res = await fetch(`${API_BASE}/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return;
+    const body = await res.json();
+    const user = body.user;
+    if (!user) return;
 
-  if (!savedEmail) {
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      try {
-        const res = await fetch(`${API_BASE}/auth/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.email) emailInput.value = data.email;
-          if (data.name && !savedName) nameInput.value = data.name;
-          if (profileEmailDisplay)
-            profileEmailDisplay.textContent = data.email || "";
-        }
-      } catch (err) {
-        
-      }
+    if (emailInput) emailInput.value = user.email || "";
+    if (nameInput) nameInput.value = user.name || "";
+
+    if (user.avatar && profilePhoto) {
+      profilePhoto.src = user.avatar;
+      profilePhoto.style.display = "block";
+      if (profilePhotoFallback) profilePhotoFallback.style.display = "none";
     }
-  }
-  if (profileEmailDisplay) {
-    profileEmailDisplay.textContent = emailInput.value || "";
+
+    if (profileEmailDisplay) profileEmailDisplay.textContent = user.email || "";
+  } catch (err) {
+    console.error("Failed to load profile from server", err);
   }
 }
 
@@ -70,21 +61,9 @@ photoInput.addEventListener("change", async (e) => {
 });
 
 saveBtn.addEventListener("click", async () => {
-  const email = emailInput.value.trim();
   const name = nameInput.value.trim();
-
-  if (email) localStorage.setItem("profile_email", email);
-  else localStorage.removeItem("profile_email");
-
-  if (name) localStorage.setItem("profile_name", name);
-  else localStorage.removeItem("profile_name");
-
-  if (profileEmailDisplay) profileEmailDisplay.textContent = email || "";
-
   const file = photoInput.files && photoInput.files[0];
   const token = localStorage.getItem("access_token");
-
-  const API_BASE = "http://localhost:3000";
 
   if (file && token) {
     try {
@@ -93,9 +72,7 @@ saveBtn.addEventListener("click", async () => {
 
       const res = await fetch(`${API_BASE}/auth/avatar`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
         body: form,
       });
 
@@ -103,20 +80,36 @@ saveBtn.addEventListener("click", async () => {
         console.error("Upload failed", await res.text());
       } else {
         const body = await res.json();
-
-        const avatarUrl = body.avatar ? `${API_BASE}${body.avatar}` : null;
+        const avatarUrl =
+          body.avatar && body.avatar.startsWith("http")
+            ? body.avatar
+            : body.avatar
+            ? `${API_BASE}${body.avatar}`
+            : null;
         if (avatarUrl) {
-          localStorage.setItem("profile_photo", avatarUrl);
           profilePhoto.src = avatarUrl;
           profilePhoto.style.display = "block";
-          profilePhotoFallback.style.display = "none";
+          if (profilePhotoFallback) profilePhotoFallback.style.display = "none";
         }
       }
     } catch (err) {
       console.error("Error uploading avatar:", err);
     }
-  } else if (profilePhoto && profilePhoto.src) {
-    localStorage.setItem("profile_photo", profilePhoto.src);
+  }
+
+  if (token && typeof name !== "undefined") {
+    try {
+      await fetch(`${API_BASE}/auth/me`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name }),
+      });
+    } catch (err) {
+      console.error("Failed to update profile name on server", err);
+    }
   }
 
   window.location.href = "/src/pages/todos.html";

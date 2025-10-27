@@ -9,6 +9,8 @@ import {
 } from "./api.js";
 import { refs } from "./selectors.js";
 
+const API_BASE = "http://localhost:3000";
+
 const tagIcon = `<i class="fa-solid fa-tag" style="margin-right: 4px; font-size: 10px;"></i>`;
 
 let currentEditingTask = null;
@@ -27,21 +29,33 @@ let currentSortOrder = "default";
   }
 })();
 
+//profile
+
 (function setupProfileButton() {
   const profileBtn = document.getElementById("profile-button");
   const avatarImg = document.getElementById("profile-avatar");
   const fallback = document.getElementById("profile-fallback");
 
-  try {
-    const photo = localStorage.getItem("profile_photo");
-    if (photo && avatarImg) {
-      avatarImg.src = photo;
-      avatarImg.style.display = "block";
-      if (fallback) fallback.style.display = "none";
+  (async function () {
+    const token = localStorage.getItem("access_token");
+    if (!token) return;
+    try {
+      const res = await fetch(`${API_BASE}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) return;
+      const body = await res.json();
+      const user = body.user;
+      const photo = user && user.avatar;
+      if (photo && avatarImg) {
+        avatarImg.src = photo;
+        avatarImg.style.display = "block";
+        if (fallback) fallback.style.display = "none";
+      }
+    } catch (e) {
+      console.error("profile photo load error", e);
     }
-  } catch (e) {
-    console.error("profile photo load error", e);
-  }
+  })();
 
   if (profileBtn) {
     profileBtn.addEventListener("click", function () {
@@ -51,6 +65,7 @@ let currentSortOrder = "default";
 })();
 
 // the small tag badges under the tags entry
+
 function renderCurrentTags() {
   refs.currentTagsContainer.innerHTML = "";
   currentTags.forEach((tag) => {
@@ -65,6 +80,7 @@ function renderCurrentTags() {
 }
 
 // "Add Tag"
+
 function addTagLocal(tag) {
   if (tag && !currentTags.includes(tag)) {
     currentTags.push(tag);
