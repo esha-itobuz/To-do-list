@@ -14,7 +14,7 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error) //static method: returns Promise object thats rejected with reason
+  (error) => Promise.reject(error) 
 ); //before request is sent
 
 let isRefreshing = false;
