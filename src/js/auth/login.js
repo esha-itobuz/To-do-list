@@ -11,7 +11,7 @@ function showToast(message, type = "info") {
       bgColor = "linear-gradient(to right, #dc2626, #ef4444)";
       break;
     default:
-      bgColor = "linear-gradient(to right, #dc4c3e, #c53e33)";
+      bgColor = "linear-gradient(to right, #3b82f6, #2563eb)";
   }
 
   Toastify({
@@ -19,7 +19,6 @@ function showToast(message, type = "info") {
     duration: 3500,
     gravity: "top",
     position: "right",
-    close: true,
     stopOnFocus: true,
     style: {
       background: bgColor,
@@ -53,8 +52,9 @@ if (loginForm) {
       });
 
       const data = await res.json();
+      const user = data.user;
 
-      if (res.status === 403 && data.message?.includes("not verified")) {
+      if (!res.ok) {
         showToast(data.message, "error");
         setTimeout(() => {
           window.location.href = `/src/pages/verify-email.html?email=${encodeURIComponent(

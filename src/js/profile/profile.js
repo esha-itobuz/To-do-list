@@ -1,6 +1,5 @@
 const API_BASE = "http://localhost:3000";
 
-const emailInput = document.getElementById("email-input");
 const profileEmailDisplay = document.getElementById("profile-email-display");
 const nameInput = document.getElementById("name-input");
 const photoInput = document.getElementById("photo-input");
@@ -23,8 +22,9 @@ async function loadProfile() {
     const user = body.user;
     if (!user) return;
 
-    if (emailInput) emailInput.value = user.email || "";
-    if (nameInput) nameInput.value = user.name || "";
+    if (nameInput){
+       nameInput.value = user.name || "";
+    }
 
     if (user.avatar && profilePhoto) {
       profilePhoto.src = user.avatar;
@@ -32,7 +32,9 @@ async function loadProfile() {
       if (profilePhotoFallback) profilePhotoFallback.style.display = "none";
     }
 
-    if (profileEmailDisplay) profileEmailDisplay.textContent = user.email || "";
+    if (profileEmailDisplay){
+      profileEmailDisplay.textContent = user.email || "";
+    }
   } catch (err) {
     console.error("Failed to load profile from server", err);
   }
