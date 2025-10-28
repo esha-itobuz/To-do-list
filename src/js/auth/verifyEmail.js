@@ -23,7 +23,6 @@ function showToast(message, type = "info") {
     gravity: "top",
     position: "right",
     stopOnFocus: true,
-    close: true,
     style: { background: bgColor, borderRadius: "8px", fontWeight: "500" },
   }).showToast();
 }
